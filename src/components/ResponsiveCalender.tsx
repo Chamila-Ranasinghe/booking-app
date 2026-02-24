@@ -1658,7 +1658,7 @@ const MobiScrollCalendar: FC = () => {
         {/* Left: logo */}
         <div className="topbar-logo">
           <LogoIcon />
-          <span>CalClone</span>
+          {/* <span>CalClone</span> */}
         </div>
 
         <div className="topbar-divider" />
