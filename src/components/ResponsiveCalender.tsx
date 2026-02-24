@@ -1007,15 +1007,15 @@ interface MonthGridProps {
   isDesktop: boolean;
 }
 
-const DAY_FULL: string[] = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
+// const DAY_FULL: string[] = [
+//   "Sunday",
+//   "Monday",
+//   "Tuesday",
+//   "Wednesday",
+//   "Thursday",
+//   "Friday",
+//   "Saturday",
+// ];
 const DAY_MED: string[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const MonthGrid: FC<MonthGridProps> = ({
