@@ -13,6 +13,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import "../css/navbar.scss";
 
 interface Props {
   /**
@@ -23,7 +24,7 @@ interface Props {
 }
 
 const drawerWidth = 240;
-const navItems = ["Home", "About", "Contact"];
+const navItems = ["Register", "Home", "About", "Contact"];
 
 export default function NavBar(props: Props) {
   const { window } = props;
@@ -39,9 +40,7 @@ export default function NavBar(props: Props) {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        SOFTBALL PITCH BOOKING
-      </Typography>
+      <Typography>SPORTS ZONE</Typography>
       <Divider />
       <List>
         {navItems.map((item) => (
@@ -61,10 +60,10 @@ export default function NavBar(props: Props) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar component="nav">
-        <Toolbar>
+      <AppBar component="nav" className="myAppBar">
+        <Toolbar className="tool-bar">
           <IconButton
-            color="inherit"
+            color="info"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
@@ -76,12 +75,13 @@ export default function NavBar(props: Props) {
             variant="h6"
             component="div"
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+            className="company-name"
           >
-            SOFTBALL PITCH BOOKING
+            SPORTS ZONE
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: "#fff" }} onClick={alertonclick}>
+              <Button key={item} className="menubutton">
                 {item}
               </Button>
             ))}
@@ -102,6 +102,8 @@ export default function NavBar(props: Props) {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              backgroundColor: "black",
+              color: "white",
             },
           }}
         >

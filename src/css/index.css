@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap");
 
 *,
 *::before,
@@ -36,8 +36,8 @@
   --shadow-sm: 0 1px 6px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.14);
-  --font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: "DM Mono", "SF Mono", monospace;
+  --font-sans: "Outfit", -apple-system, BlinkMacSystemFont, sans-serif;
+  /* --font-mono: "Outfit", "SF Mono", monospace; */
   --transition: 0.16s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

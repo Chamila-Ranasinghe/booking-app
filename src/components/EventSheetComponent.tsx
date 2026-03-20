@@ -20,6 +20,10 @@ export const EventSheet: FC<EventSheetProps> = ({
   const [title, setTitle] = useState<string>(event?.title ?? "");
   const [color, setColor] = useState<string>(event?.color ?? COLOR_PALETTE[0]);
   const [allDay, setAllDay] = useState<boolean>(event?.allDay ?? false);
+  const [recurringEvent, setRecurring] = useState<boolean>(
+    event?.recurringEvent ?? false,
+  );
+  const [sport, setSport] = useState<string>(event?.sport ?? "");
   const [dateStr, setDateStr] = useState<string>(
     toDateInput(event?.start ?? defaultDate),
   );
@@ -38,7 +42,16 @@ export const EventSheet: FC<EventSheetProps> = ({
     const end = allDay
       ? parseDateTime(dateStr, "23:59")
       : parseDateTime(dateStr, endT);
-    onSave({ id: event?.id, title: title.trim(), start, end, color, allDay });
+    onSave({
+      id: event?.id,
+      title: title.trim(),
+      start,
+      end,
+      color,
+      allDay,
+      recurringEvent,
+      sport,
+    });
   }, [title, allDay, dateStr, startT, endT, color, event, onSave]);
 
   // ⚠️ NOTE: Do NOT define a Wrapper component here — components defined inside
@@ -72,12 +85,33 @@ export const EventSheet: FC<EventSheetProps> = ({
             />
           </div>
           <div>
+            <div className="field-label">Sport</div>
+            <select
+              value={sport}
+              className="cal-input"
+              onChange={(e) => setSport(e.target.value)}
+            >
+              <option value="">Select</option>
+              <option value="football">Football</option>
+              <option value="cricket">Cricket</option>
+              <option value="tennis">Tennis</option>
+            </select>
+            <p>Selected: {sport}</p>
+          </div>
+          <div>
             <div className="field-label">Date</div>
             <input
               type="date"
               className="cal-input"
               value={dateStr}
               onChange={(e) => setDateStr(e.target.value)}
+            />
+          </div>
+          <div className="toggle-row">
+            <span className="toggle-label">Recurring Event</span>
+            <button
+              className={`toggle-btn ${recurringEvent ? "on" : ""}`}
+              onClick={() => setRecurring((v) => !v)}
             />
           </div>
           <div className="toggle-row">

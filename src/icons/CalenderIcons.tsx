@@ -2,12 +2,12 @@ import { type FC } from "react";
 
 export const ChevronLeftIcon: FC = () => (
   <svg
-    width="16"
-    height="16"
+    width="20"
+    height="20"
     viewBox="0 0 24 24"
     fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
+    stroke="#0a0a0a"
+    strokeWidth="3.5"
     strokeLinecap="round"
     strokeLinejoin="round"
   >
@@ -16,12 +16,12 @@ export const ChevronLeftIcon: FC = () => (
 );
 export const ChevronRightIcon: FC = () => (
   <svg
-    width="16"
-    height="16"
+    width="20"
+    height="20"
     viewBox="0 0 24 24"
     fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
+    stroke="#0a0a0a"
+    strokeWidth="3.5"
     strokeLinecap="round"
     strokeLinejoin="round"
   >
@@ -30,8 +30,8 @@ export const ChevronRightIcon: FC = () => (
 );
 export const PlusIcon: FC = () => (
   <svg
-    width="16"
-    height="16"
+    width="20"
+    height="20"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -83,7 +83,7 @@ export const LogoIcon: FC = () => (
       width="18"
       height="18"
       rx="3"
-      fill="#007aff"
+      fill="#f5f5f5"
       opacity=".15"
     />
     <rect
@@ -92,16 +92,16 @@ export const LogoIcon: FC = () => (
       width="18"
       height="18"
       rx="3"
-      stroke="#007aff"
+      stroke="#f5f5f5"
       strokeWidth="1.5"
     />
-    <line x1="3" y1="9" x2="21" y2="9" stroke="#007aff" strokeWidth="1.5" />
+    <line x1="3" y1="9" x2="21" y2="9" stroke="#f5f5f5" strokeWidth="1.5" />
     <line
       x1="8"
       y1="2"
       x2="8"
       y2="7"
-      stroke="#007aff"
+      stroke="#f5f5f5"
       strokeWidth="2"
       strokeLinecap="round"
     />
@@ -110,14 +110,14 @@ export const LogoIcon: FC = () => (
       y1="2"
       x2="16"
       y2="7"
-      stroke="#007aff"
+      stroke="#f5f5f5"
       strokeWidth="2"
       strokeLinecap="round"
     />
-    <circle cx="8" cy="14" r="1.5" fill="#007aff" />
-    <circle cx="12" cy="14" r="1.5" fill="#007aff" />
-    <circle cx="16" cy="14" r="1.5" fill="#007aff" />
-    <circle cx="8" cy="18" r="1.5" fill="#007aff" />
-    <circle cx="12" cy="18" r="1.5" fill="#007aff" />
+    <circle cx="8" cy="14" r="1.5" fill="#f5f5f5" />
+    <circle cx="12" cy="14" r="1.5" fill="#f5f5f5" />
+    <circle cx="16" cy="14" r="1.5" fill="#f5f5f5" />
+    <circle cx="8" cy="18" r="1.5" fill="#f5f5f5" />
+    <circle cx="12" cy="18" r="1.5" fill="#f5f5f5" />
   </svg>
 );

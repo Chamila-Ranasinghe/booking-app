@@ -9,7 +9,7 @@ import {
 import type { CalendarEvent, SheetState } from "../classes/CalendarClass";
 import { MONTH_NAMES } from "../classes/CalendarData";
 import { sameDay, startOf } from "../classes/CalendarFunctions";
-import "../css/ResponsiveCalender.css";
+import "../css/ResponsiveCalender.scss";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -36,6 +36,8 @@ function mkEvent(
   em: number,
   color: string,
   allDay = false,
+  recurringEvent = false,
+  sport: string,
 ): CalendarEvent {
   return {
     id: _uid++,
@@ -44,14 +46,40 @@ function mkEvent(
     allDay,
     start: new Date(CY, mo, d, sh, sm),
     end: new Date(CY, mo, d, eh, em),
+    recurringEvent,
+    sport,
   };
 }
 
 const INITIAL_EVENTS: CalendarEvent[] = [
-  mkEvent("Team Standup", CM, 1, 9, 0, 9, 30, "#3b82f6"),
-  mkEvent("Design Review", CM, 3, 14, 0, 15, 30, "#8b5cf6"),
-  mkEvent("1-on-1", CM, NOW.getDate(), 10, 0, 10, 30, "#3b82f6"),
-  mkEvent("Morning Run", CM, NOW.getDate(), 7, 0, 8, 0, "#10b981"),
+  mkEvent("Team Standup", CM, 1, 9, 0, 9, 30, "#3b82f6", false, false, ""),
+  mkEvent("Design Review", CM, 3, 14, 0, 15, 30, "#8b5cf6", false, false, ""),
+  mkEvent(
+    "1-on-1",
+    CM,
+    NOW.getDate(),
+    10,
+    0,
+    10,
+    30,
+    "#3b82f6",
+    false,
+    false,
+    "",
+  ),
+  mkEvent(
+    "Morning Run",
+    CM,
+    NOW.getDate(),
+    7,
+    0,
+    8,
+    0,
+    "#10b981",
+    false,
+    false,
+    "",
+  ),
 ];
 
 /* ══════════════════════════════════════════════════════════════
@@ -171,7 +199,7 @@ const MobiScrollCalendar: FC = () => {
           {/* <span>CalClone</span> */}
         </div>
 
-        <div className="topbar-divider" />
+        {/* <div className="topbar-divider" /> */}
 
         {/* Centre: month navigation */}
         <div className="topbar-nav">
@@ -217,7 +245,7 @@ const MobiScrollCalendar: FC = () => {
             onClick={() => setSheet({ mode: "add" })}
             aria-label="Add event"
           >
-            <PlusIcon /> New event
+            <PlusIcon /> BOOK
           </button>
           <button
             className="btn-add-mobile"

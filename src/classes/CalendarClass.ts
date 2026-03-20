@@ -5,6 +5,8 @@ export interface CalendarEvent {
   end: Date;
   color: string;
   allDay: boolean;
+  recurringEvent: boolean;
+  sport: string;
 }
 
 export interface DayCell {
