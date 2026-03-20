@@ -34,9 +34,9 @@ export default function NavBar(props: Props) {
     setMobileOpen((prevState) => !prevState);
   };
 
-  const alertonclick = () => {
-    alert("clicked ");
-  };
+  // const alertonclick = () => {
+  //   alert("clicked ");
+  // };
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
