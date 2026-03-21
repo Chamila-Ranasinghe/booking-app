@@ -34,9 +34,15 @@
     max-width: fit-content;
   }
 
+  .loginbuttons{
+    float: right;
+  }
+
   @media (min-width: 768px) {
   .tool-bar{
     padding-left: 0px;
   }
 }
+
+
 }

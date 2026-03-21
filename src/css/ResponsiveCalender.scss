@@ -125,7 +125,8 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 2px;
+  letter-spacing: 2px;
   transition:
     background var(--transition),
     transform var(--transition);
@@ -1156,9 +1157,10 @@
   }
   .topbar {
     padding: 0 28px;
+    margin-bottom: 10px;
   }
   .topbar-title {
-    font-size: 18px;
+    font-size: 22px;
     min-width: 190px;
   }
 }

@@ -14,6 +14,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import "../css/navbar.scss";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   /**
@@ -24,19 +25,32 @@ interface Props {
 }
 
 const drawerWidth = 240;
-const navItems = ["Register", "Home", "About", "Contact"];
+const navItems = ["Home", "Register", "Sign In"];
 
 export default function NavBar(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
 
-  // const alertonclick = () => {
-  //   alert("clicked ");
-  // };
+  const handleNavClick = React.useCallback((nav: string) => {
+      if(nav){
+         if(nav.match("Home")){
+           navigate("/");
+         }
+         if(nav.match("Register")){
+           navigate("/register");
+         }
+         if(nav.match("Sign In")){
+           navigate("/signin");
+         }
+      }  
+    
+    }, []);
+
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
@@ -81,7 +95,7 @@ export default function NavBar(props: Props) {
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map((item) => (
-              <Button key={item} className="menubutton">
+              <Button key={item} className="menubutton" onClick={() => handleNavClick(item)}>
                 {item}
               </Button>
             ))}

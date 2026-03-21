@@ -76,7 +76,7 @@ export const CalEmptyIcon: FC = () => (
   </svg>
 );
 export const LogoIcon: FC = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
     <rect
       x="3"
       y="4"
