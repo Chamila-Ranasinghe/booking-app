@@ -6,7 +6,8 @@ export interface CalendarEvent {
   color: string;
   allDay: boolean;
   recurringEvent: boolean;
-  sport: string;
+  sport?: string;
+  timeSlots?: number[];
 }
 
 export interface DayCell {

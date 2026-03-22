@@ -9,6 +9,7 @@ import {
 } from "../classes/CalendarFunctions";
 import { XIcon, CalEmptyIcon } from "../icons/CalenderIcons";
 import { MONTH_NAMES, DAY_LONG } from "../classes/CalendarData";
+import "../css/AgendaPanelComponent.scss";
 
 export const AgendaPanel: FC<AgendaProps> = ({
   events,
@@ -76,14 +77,17 @@ export const AgendaPanel: FC<AgendaProps> = ({
       {/* Desktop sidebar header */}
       {isDesktop && (
         <div className="agenda-sidebar-top">
-          <div className="agenda-sidebar-label">{sidebarLabel}</div>
-          <div className="agenda-sidebar-heading">{sidebarHeading}</div>
-          <div className="agenda-sidebar-sub">{sidebarSub}</div>
-          {selectedDay && (
+          {/* <div className="agenda-sidebar-label">{sidebarLabel}</div> */}
+          <div className="day-event-container">
+            <div className="agenda-sidebar-heading">{sidebarHeading}</div>
+            <div className="agenda-sidebar-sub">{sidebarSub}</div>
+             {selectedDay && (
             <button className="agenda-sidebar-clear" onClick={onClearDay}>
               <XIcon /> Show all month
             </button>
           )}
+          </div>
+         
         </div>
       )}
 
@@ -96,9 +100,8 @@ export const AgendaPanel: FC<AgendaProps> = ({
             const isToday = sameDay(day, todayDate);
             return (
               <div key={day.toISOString()} className="agenda-day-block">
-                <div
-                  className={`agenda-day-header ${isToday ? "is-today" : ""}`}
-                >
+                <div className={`agenda-day-header ${isToday ? "is-today" : ""}`}>
+                  <div></div>
                   <div className="agenda-day-num">{day.getDate()}</div>
                   <div className="agenda-day-meta">
                     <div className="agenda-day-name">

@@ -121,3 +121,18 @@ export const LogoIcon: FC = () => (
     <circle cx="12" cy="18" r="1.5" fill="#f5f5f5" />
   </svg>
 );
+
+export const EventCardChevronRightIcon: FC = () => (
+  <svg
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#0a0a0a"
+    strokeWidth="3.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polyline points="9 18 15 12 9 6" />
+  </svg>
+);

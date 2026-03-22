@@ -1,6 +1,8 @@
 import { type FC } from "react";
 import { type DetailSheetProps } from "../classes/CalendarClass";
 import { formatTime } from "../classes/CalendarFunctions";
+import { XIcon } from "../icons/CalenderIcons";
+import "../css/EventDetailComponent.scss";
 
 export const DetailSheet: FC<DetailSheetProps> = ({
   event,
@@ -19,6 +21,11 @@ export const DetailSheet: FC<DetailSheetProps> = ({
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className={isDesktop ? "modal" : "sheet"}>
+        <div className="close-button-event-details">
+          <button className="close-btn" onClick={onClose}>
+            <XIcon />
+          </button>
+        </div>
         {!isDesktop && <div className="sheet-handle" />}
         <div
           className="detail-color-strip"
@@ -26,7 +33,7 @@ export const DetailSheet: FC<DetailSheetProps> = ({
             background: event.color + "40",
             borderLeft: `4px solid ${event.color}`,
           }}
-        />
+        ></div>
         <div className="detail-title">{event.title}</div>
         <div className="detail-time">{timeStr}</div>
         <div className="sheet-footer">
@@ -38,9 +45,6 @@ export const DetailSheet: FC<DetailSheetProps> = ({
             }}
           >
             Delete
-          </button>
-          <button className="btn btn-ghost" onClick={onClose}>
-            Close
           </button>
           <button className="btn btn-primary" onClick={() => onEdit(event)}>
             Edit Event
