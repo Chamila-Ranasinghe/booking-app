@@ -46,7 +46,7 @@ export const AgendaPanel: FC<AgendaProps> = ({
   );
 
   // Desktop sidebar header content
-  const sidebarLabel = selectedDay ? "Selected Day" : MONTH_NAMES[month];
+  // const sidebarLabel = selectedDay ? "Selected Day" : MONTH_NAMES[month];
   const sidebarHeading = selectedDay
     ? `${DAY_LONG[selectedDay.getDay()]}, ${selectedDay.getDate()}`
     : `${monthEventCount} event${monthEventCount !== 1 ? "s" : ""}`;

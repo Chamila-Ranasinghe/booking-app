@@ -62,8 +62,8 @@ export const EventSheet: FC<EventSheetProps> = ({
   const [recurringEvent, setRecurring] = useState<boolean>(event?.recurringEvent ?? false,);
   const [sport, setSport] = useState<string>(event?.sport ?? "");
   const [dateStr, setDateStr] = useState<string>(toDateInput(event?.start ?? defaultDate),);
-  const [startT, setStartT] = useState<string>(toTimeInput(event?.start ?? new Date()),);
-  const [endT, setEndT] = useState<string>(toTimeInput(event?.end ?? new Date()),);
+  // const [startT, setStartT] = useState<string>(toTimeInput(event?.start ?? new Date()),);
+  // const [endT, setEndT] = useState<string>(toTimeInput(event?.end ?? new Date()),);
   const [selSlots,  setSelSlots]  = useState<number[]>(initialSlots);
 
   const toggleSlot = useCallback((hour: number) => {
