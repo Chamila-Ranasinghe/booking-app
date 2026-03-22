@@ -3,8 +3,7 @@ import { type EventSheetProps } from "../classes/CalendarClass";
 import { COLOR_PALETTE } from "../classes/CalendarData";
 import {
   parseDateTime,
-  toDateInput,
-  toTimeInput,
+  toDateInput
 } from "../classes/CalendarFunctions";
 import { XIcon } from "../icons/CalenderIcons";
 
