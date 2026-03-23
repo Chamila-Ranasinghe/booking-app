@@ -25,8 +25,11 @@ export const EventCard: FC<EventCardProps> = ({ event, onPress }) => {
             </div>
           </div>
         </div>
-        <div className="event-title">{event.title}</div>
-        <div className="event-time">{timeStr}</div>
+        <div className="event-detail-card">
+          <div className="event-title">Cricket - </div>
+          <div className="event-time">{timeStr}</div>
+        </div>
+        <div className="price-tag">LKR 5,000.00</div>
       </div>
       {event.allDay && (
         <div
