@@ -613,7 +613,7 @@
   // padding-bottom: env(safe-area-inset-bottom, 20px);
   animation: slideUp 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   // max-height: 94dvh;
-  max-height: 80dvh;
+  max-height: 94dvh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -705,6 +705,8 @@
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
+  min-height:0;
+
 }
 .sheet-body::-webkit-scrollbar {
   width: 4px;
@@ -823,7 +825,7 @@
   display: flex;
   gap: 10px;
   padding: 12px 22px;
-  padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));
+  padding-bottom:max(12px, env(safe-area-inset-bottom));
   border-top: 1.5px solid var(--border);
   background: var(--surface);
   flex-shrink: 0;
