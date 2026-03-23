@@ -13,3 +13,10 @@
    background-repeat: no-repeat;
 }
 
+
+@media (min-width: 0px) and (max-width: 650px) {
+    .main-container {
+      padding: 0.8rem;
+    }
+  }
+

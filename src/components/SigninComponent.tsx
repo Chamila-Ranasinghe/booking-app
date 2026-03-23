@@ -1,5 +1,7 @@
 import { useState, useEffect, type FC, type FormEvent, type ChangeEvent } from "react";
 import "../css/SigninComponent.scss";
+import { useNavigate } from "react-router-dom";
+
 
 
 /* ══════════════════════════════════════════════════════════════
@@ -56,6 +58,8 @@ interface FormErrors {
    COMPONENT
 ══════════════════════════════════════════════════════════════ */
 const SignIn: FC = () => {
+
+  const navigate = useNavigate();
   const [form,    setForm]    = useState<FormState>({ email: "", password: "", remember: false });
   const [errors,  setErrors]  = useState<FormErrors>({});
   const [showPwd, setShowPwd] = useState(false);
@@ -223,7 +227,7 @@ const SignIn: FC = () => {
  
           <div className="card-footer">
             Don't have an account?&nbsp;
-            <a href="/register">Create Account</a>
+            <a onClick={()=> navigate("/register")}>Create Account</a>
           </div>
         </div>
       </div>

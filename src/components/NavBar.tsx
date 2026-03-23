@@ -54,13 +54,13 @@ export default function NavBar(props: Props) {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography>SPORTS ZONE</Typography>
+      <Typography className="comp-logo-mobile">SPORTS ZONE</Typography>
       <Divider />
       <List>
         {navItems.map((item) => (
           <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <ListItemText primary={item} />
+            <ListItemButton sx={{ textAlign: "center" }} onClick={() => handleNavClick(item)}>
+              <ListItemText primary={item}  />
             </ListItemButton>
           </ListItem>
         ))}
@@ -81,6 +81,7 @@ export default function NavBar(props: Props) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
+            className="iconbutton-mobile"
             sx={{ mr: 2, display: { sm: "none" } }}
           >
             <MenuIcon />
@@ -91,7 +92,7 @@ export default function NavBar(props: Props) {
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
             className="company-name"
           >
-            SPORTS ZONE
+            SPORTS ZONES
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map((item) => (

@@ -1,5 +1,6 @@
 import "../css/RegisterComponent.scss";
 import { useState, type FC, type FormEvent, type ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -95,6 +96,8 @@ interface FormErrors {
    COMPONENT
 ══════════════════════════════════════════════════════════════ */
 const Register: FC = () => {
+
+  const navigate = useNavigate();
   const [form,    setForm]    = useState<FormState>({
     firstName:"", lastName:"", email:"", phone:"",
     password:"", confirm:"", plan:"pro", terms: false,
@@ -326,47 +329,6 @@ const Register: FC = () => {
               </div>
             </div>
 
-            {/* ── Plan selector ── */}
-            {/* <div className="section-title" style={{ marginTop: 24 }}>Choose a Plan</div>
-            <div className="plan-grid" style={{ marginBottom: 22 }}>
-              {PLANS.map(p => (
-                <div
-                  key={p.id}
-                  className={`plan-card ${form.plan === p.id ? "selected" : ""}`}
-                  onClick={() => setForm(f => ({ ...f, plan: p.id }))}
-                >
-                  {p.popular && <div className="plan-badge">Popular</div>}
-                  <div className="plan-icon">{p.icon}</div>
-                  <div className="plan-name">{p.name}</div>
-                  <div className="plan-price">{p.price}</div>
-                </div>
-              ))}
-            </div> */}
-
-            {/* Terms */}
-            {/* <label className={`terms-wrap ${errors.terms ? "error" : ""}`}>
-              <input
-                type="checkbox"
-                name="terms"
-                className="terms-cb"
-                checked={form.terms}
-                onChange={handleChange}
-              />
-              <span className="terms-text">
-                I agree to CalClone's{" "}
-                <a href="#" onClick={e => e.preventDefault()}>Terms of Service</a>
-                {" "}and{" "}
-                <a href="#" onClick={e => e.preventDefault()}>Privacy Policy</a>.
-                You'll receive account-related emails.
-              </span>
-            </label> */}
-
-            {/* {errors.terms && (
-              <div style={{ marginBottom: 16, marginTop: -8 }}>
-                <span className="field-err"><AlertIcon/>{errors.terms}</span>
-              </div>
-            )} */}
-
             <button type="submit" className="submit-btn" disabled={loading}>
               {loading ? (
                 <><div className="spinner"/><span>Creating account…</span></>
@@ -383,7 +345,7 @@ const Register: FC = () => {
 
           <div className="card-footer">
             Already have an account?&nbsp;
-            <a href="/signin">Sign in instead</a>
+            <a onClick={()=> navigate("/signin")}>Sign in instead</a>
           </div>
         </div>
       </div>
