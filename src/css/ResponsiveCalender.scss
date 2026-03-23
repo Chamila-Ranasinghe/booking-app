@@ -612,7 +612,8 @@
   animation:slideUp .28s cubic-bezier(.4,0,.2,1);
   // padding-bottom: env(safe-area-inset-bottom, 20px);
   animation: slideUp 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-  max-height: 94dvh;
+  // max-height: 94dvh;
+  max-height: 80dvh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -653,10 +654,11 @@
 
 .sheet-handle {
   width: 40px;
-  height: 4px;
+  // height: 4px;
   background: var(--surface-3);
   border-radius: 2px;
-  margin: 14px auto 0;
+  // margin: 14px auto 0;
+  margin: 0px auto 0;
   flex-shrink: 0;
 }
 .sheet-header {
