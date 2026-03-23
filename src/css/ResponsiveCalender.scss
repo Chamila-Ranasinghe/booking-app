@@ -609,7 +609,8 @@
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   width: 100%;
   max-width: 520px;
-  padding-bottom: env(safe-area-inset-bottom, 20px);
+  animation:slideUp .28s cubic-bezier(.4,0,.2,1);
+  // padding-bottom: env(safe-area-inset-bottom, 20px);
   animation: slideUp 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   max-height: 94dvh;
   overflow: hidden;
@@ -819,10 +820,14 @@
 .sheet-footer {
   display: flex;
   gap: 10px;
-  padding: 12px 22px 10px;
+  padding: 12px 22px;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));
   border-top: 1.5px solid var(--border);
   background: var(--surface);
   flex-shrink: 0;
+  position:sticky;
+  bottom:0;
+  z-index:10;
 }
 
 .btn {
