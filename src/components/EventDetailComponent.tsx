@@ -20,7 +20,7 @@ export const DetailSheet: FC<DetailSheetProps> = ({
       className={`overlay ${isDesktop ? "modal-mode" : ""}`}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className={isDesktop ? "modal" : "sheet"}>
+      <div className={isDesktop ? "modal" : "modal"}>
         <div className="close-button-event-details">
           <button className="close-btn" onClick={onClose}>
             <XIcon />
