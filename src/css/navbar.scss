@@ -48,6 +48,33 @@
     border-bottom: 1px solid $lightblack;
   }
 
+  .logged-profile {
+      position: absolute;
+      right: 15px;
+    }
+
+  .signIn{
+    position: absolute;
+    right: 15px;
+    top: 10px;
+  }  
+
+  .active{
+    background-color: $HoverGreen;
+    color: $TextWhite;
+  }
+
+//   .menubutton:focus {
+//   outline: 2px solid rgba(0, 255, 170, 0.5);
+//   outline-offset: 2px;
+// }
+
+.MuiBox-root{
+  a{
+    display: contents;
+  }
+}
+
   @media (min-width: 600px) {
     .tool-bar {
       padding-left: 0px;
@@ -66,4 +93,22 @@
       padding: 13px 60px 13px 10px;
     }
   }
+
+  .navlink {
+  color: #fff;
+  text-decoration: none;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* 👇 This is the key part */
+.navlink.active {
+  color: #00ffaa;
+  border-bottom: 2px solid #00ffaa;
+}
+
+  
 }
