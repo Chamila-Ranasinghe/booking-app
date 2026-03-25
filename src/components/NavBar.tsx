@@ -37,7 +37,7 @@ const signInItems = [
 export default function NavBar(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [auth, setAuth] = React.useState(false);
+  const [auth] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   // const navigate = useNavigate();
 
