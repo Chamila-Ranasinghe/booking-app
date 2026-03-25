@@ -6,6 +6,12 @@ import {
   toDateInput
 } from "../classes/CalendarFunctions";
 import { XIcon } from "../icons/CalenderIcons";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import "../css/EventSheetComponent.scss";
+
 
   /* All 1-hour slots from 6 AM to 10 PM */
 const ALL_SLOTS: { hour: number; label: string }[] = Array.from({ length: 17 }, (_, i) => {
@@ -55,12 +61,15 @@ export const EventSheet: FC<EventSheetProps> = ({
   }, [event]);
 
 
+
   const [title, setTitle] = useState<string>(event?.title ?? "");
   const [color, setColor] = useState<string>(event?.color ?? COLOR_PALETTE[0]);
   const [allDay, setAllDay] = useState<boolean>(event?.allDay ?? false);
   const [recurringEvent, setRecurring] = useState<boolean>(event?.recurringEvent ?? false,);
   const [sport, setSport] = useState<string>(event?.sport ?? "");
   const [dateStr, setDateStr] = useState<string>(toDateInput(event?.start ?? defaultDate),);
+
+  
   // const [startT, setStartT] = useState<string>(toTimeInput(event?.start ?? new Date()),);
   // const [endT, setEndT] = useState<string>(toTimeInput(event?.end ?? new Date()),);
   const [selSlots,  setSelSlots]  = useState<number[]>(initialSlots);
@@ -176,14 +185,28 @@ export const EventSheet: FC<EventSheetProps> = ({
 
           <div>
             <div className="field-label">Date</div>
-            <input
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+
+        <DatePicker 
+        className="cal-input"
+        disablePast
+        defaultValue={dayjs(dateStr)} 
+        onChange={(newvalue) => setDateStr(newvalue ? newvalue.format("YYYY-MM-DD") : "")}
+        />
+
+
+    </LocalizationProvider>
+            {/* <input
               type="date"
               className="cal-input"
               value={dateStr}
               min={new Date().toISOString().split("T")[0]}
               onChange={(e) => setDateStr(e.target.value)}
-            />
+            /> */}
           </div>
+
+      
+
           <div className="toggle-row">
             <span className="toggle-label">Recurring Event</span>
             <button

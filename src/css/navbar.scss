@@ -15,6 +15,7 @@
     color: $white;
     background-color: $black;
     margin: 5px;
+    font-family: "Outfit";
 
     &:hover {
       background-color: $HoverGreen;
@@ -104,11 +105,21 @@
   }
 }
 
-/* 👇 This is the key part */
 .navlink.active {
-  color: #00ffaa;
+  color: $AccentGreen;
   border-bottom: 2px solid #00ffaa;
+
+  .MuiListItemText-root{
+    background-color: #fff;
+    padding: 10px;
+  }
 }
+
+.MuiListItemText-root{
+    span{
+      font-family: "Outfit";
+    }
+  }
 
   
 }
