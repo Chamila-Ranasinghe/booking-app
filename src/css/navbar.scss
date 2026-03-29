@@ -16,10 +16,12 @@
     background-color: $black;
     margin: 5px;
     font-family: "Outfit";
+    transition: background 0.2s, transform 0.15s;
 
     &:hover {
       background-color: $HoverGreen;
       color: $black;
+      transform: translateY(-1px);
     }
   }
 
@@ -121,5 +123,13 @@
     }
   }
 
-  
+.menu-itemms{
+    font-family: "Outfit";
+  }
+
+.username-tag{
+    font-size: 14px;
+    padding: 10px;
+    font-family: "Outfit";
+  }
 }

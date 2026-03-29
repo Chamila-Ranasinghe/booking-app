@@ -31,7 +31,7 @@ export const DetailSheet: FC<DetailSheetProps> = ({
           className="detail-color-strip"
           style={{
             background: event.color + "40",
-            borderLeft: `4px solid ${event.color}`,
+            borderLeft: `50px solid ${event.color}`,
           }}
         ></div>
         <div className="detail-title">{event.title}</div>
@@ -47,7 +47,10 @@ export const DetailSheet: FC<DetailSheetProps> = ({
             Delete
           </button>
           <button className="btn btn-primary" onClick={() => onEdit(event)}>
-            Edit Event
+            Edit
+          </button>
+          <button className="btn btn-secondary" onClick={() => onEdit(event)}>
+            Confirm
           </button>
         </div>
         <div style={{ height: 8 }} />

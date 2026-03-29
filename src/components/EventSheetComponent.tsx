@@ -275,8 +275,8 @@ export const EventSheet: FC<EventSheetProps> = ({
               ))}
             </div>
           )}
-
-
+          
+                    
           <div>
             <div className="field-label">Color</div>
             <div className="color-picker">
@@ -300,9 +300,6 @@ export const EventSheet: FC<EventSheetProps> = ({
               Delete
             </button>
           )}
-          {/* <button className="btn btn-ghost" onClick={onClose}>
-            Cancel
-          </button> */}
           <button className="btn btn-primary" onClick={handleSave}>
             {isEdit ? "Save Changes" : "Book"}
           </button>

@@ -443,11 +443,12 @@
 .agenda-empty-icon {
   width: 52px;
   height: 52px;
-  background: var(--surface-3);
+  background: $AccentGreen;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: $PrimaryBlack;
 }
 .agenda-empty-title {
   font-size: 14px;
@@ -685,6 +686,7 @@
   cursor: pointer;
   color: var(--text-3);
   transition: background var(--transition);
+  float: right;
 }
 .close-btn:hover {
   background: var(--surface-4);
@@ -853,6 +855,16 @@
 .btn-primary:hover {
   background: $HoverGreen;
 }
+
+.btn-secondary {
+  background: $orange;
+  color: #fff;
+  border-radius: var(--radius-pill);
+}
+.btn-secondary:hover {
+  background: $GreyMobile;
+}
+
 .btn-ghost {
   background: var(--surface-3);
   color: var(--text-2);
@@ -861,18 +873,19 @@
   background: var(--surface-4);
 }
 .btn-danger {
-  background: var(--danger-light);
-  color: var(--danger);
-  flex: 0 0 auto;
-  padding: 0 16px;
+  background: var(--danger);
+  color: $TextWhite;
+  // flex: 0 0 auto;
+  // padding: 0 16px;
+  border-radius: var(--radius-pill);
 }
 .btn-danger:hover {
-  background: #fee2e2;
+  background: $GreyMobile;
 }
 
 .detail-color-strip {
   height: 4px;
-  margin: 20px 50px 0;
+  // margin: 20px 50px 0;
   border-radius: 4px;
 }
 .detail-title {

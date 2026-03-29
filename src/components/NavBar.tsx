@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -18,36 +18,42 @@ import { NavLink } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import { useNavigate , useLocation } from "react-router-dom";
 
 interface Props {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
   window?: () => Window;
 }
 
 const drawerWidth = 240;
-const navItems = [{ label: "Home", path: "" }, { label: "My Bookings", path: "bookings" } ];
+const navItems = [{ label: "Home", path: "calendar" }];
 const signInItems = [
   { label: "Register", path: "register" },
   { label: "Sign In", path: "signin" },
 ];
 
 export default function NavBar(props: Props) {
+  const navigate = useNavigate();
   const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [auth] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  // const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [auth] = useState(false);
+  const [isAdmin] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isHomePage, setHomepage] = useState(true);
+  const location = useLocation();
+
+  useEffect(() => {
+    if(location.pathname === "/"){
+       setHomepage(true);
+    }
+    else{
+      console.log(location.pathname)
+      setHomepage(false);
+    }
+  }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
-
-  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setAuth(event.target.checked);
-  // };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -56,20 +62,6 @@ export default function NavBar(props: Props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  // const handleNavClick = React.useCallback((nav: string) => {
-  //   if (nav) {
-  //     if (nav.match("Home")) {
-  //       navigate("/");
-  //     }
-  //     if (nav.match("Register")) {
-  //       navigate("/register");
-  //     }
-  //     if (nav.match("Sign In")) {
-  //       navigate("/signin");
-  //     }
-  //   }
-  // }, []);
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
@@ -125,47 +117,91 @@ export default function NavBar(props: Props) {
                 to={`/${item.path.toLowerCase()}`} // adjust route if needed
                 className="navlink"
               >
-                {({ isActive }) => (
-                  <Button className={`menubutton ${isActive ? "active" : ""}`}>
-                    {item.label}
-                  </Button>
-                )}
+                {({ isActive }) =>
+                  !isHomePage && (
+                    <Button
+                      className={`menubutton ${isActive ? "active" : ""}`}
+                    >
+                      {item.label}
+                    </Button>
+                  )
+                }
               </NavLink>
             ))}
           </Box>
+          {
+            isHomePage && (
+              <div className="navigator-class">
+                <button
+                  className="nav-cta"
+                  onClick={() => {navigate("/calendar"); setHomepage(false)}}
+                >
+                  Book Now
+                </button>
+              </div>
+            )
+          }
+
           {auth ? (
-            <div className="logged-profile">
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem>Profile</MenuItem>
-                <MenuItem>My account</MenuItem>
-              </Menu>
-            </div>
+            (
+              <div className="logged-profile">
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <span className="username-tag">Hi, Ramesh</span>{" "}
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                  className="avatar-menu-dropdown"
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                  PaperProps={{
+                    elevation: 4,
+                    sx: {
+                      overflow: "visible",
+                      mt: -1,
+                      minWidth: 180,
+                      "&::before": {
+                        content: '""',
+                        display: "block",
+                        position: "absolute",
+                        top: 0,
+                        right: 33,
+                        width: 10,
+                        height: 10,
+                        bgcolor: "background.paper",
+                        transform: "translateY(-50%) rotate(45deg)",
+                        zIndex: 0,
+                      },
+                    },
+                  }}
+                >
+                  {isAdmin && (
+                    <MenuItem className="menu-itemms">Dashboard</MenuItem>
+                  )}
+                  <MenuItem className="menu-itemms">Logout</MenuItem>
+                </Menu>
+              </div>
+            )
           ) : (
-            <div className="signIn">
+            !isHomePage &&
+            (<div className="signIn">
               {signInItems.map((item) => (
                 <NavLink
                   key={item.label}
@@ -181,7 +217,7 @@ export default function NavBar(props: Props) {
                   )}
                 </NavLink>
               ))}
-            </div>
+            </div>)
           )}
         </Toolbar>
       </AppBar>
