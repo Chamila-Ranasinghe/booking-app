@@ -177,11 +177,13 @@
   gap: 4px;
   white-space: nowrap;
 }
+
 .event-count-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent);
+  background: $DarkGreen;
+  animation: pulse 1.5s ease infinite;
 }
 
 /* ════════════════════════════════════════

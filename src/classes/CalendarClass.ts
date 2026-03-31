@@ -63,3 +63,9 @@ export interface EventSheetProps {
   onDelete: (id: number) => void;
   onClose: () => void;
 }
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+}

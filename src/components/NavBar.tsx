@@ -46,7 +46,6 @@ export default function NavBar(props: Props) {
        setHomepage(true);
     }
     else{
-      console.log(location.pathname)
       setHomepage(false);
     }
   }, []);
