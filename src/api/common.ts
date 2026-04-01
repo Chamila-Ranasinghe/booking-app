@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 export interface ResponseObj<T> {
   data: T | undefined;
@@ -11,8 +11,8 @@ export const getData = (url: string) =>
     axios.get(url)
          .then((res)=> res);
 
-export const postData = (url: string) =>
-    axios.post(url)
+export const postData = async (url: string, data?: any) =>
+    await axios.post(url, data)
          .then((res)=> res);
 
 export const putData = (url: string) =>
@@ -30,5 +30,20 @@ export function useApiQuery<T>(queryKey: string[], queryFn: () => Promise<T>) {
     data,
     error: error as Error | null,
     isLoading,
+  };
+}
+
+export function useApiMutation<T, V>(
+  mutationFn: (variables: V) => Promise<T>
+) {
+  const { mutate, data, error, isPending } = useMutation({
+    mutationFn,
+  });
+
+  return {
+    mutate,
+    data,
+    error: error as Error | null,
+    isLoading: isPending,
   };
 }

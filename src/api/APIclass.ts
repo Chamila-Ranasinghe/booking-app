@@ -1,9 +1,9 @@
-const baseUrl = "https://jsonplaceholder.typicode.com/";
+const baseUrl = "http://sub.ohansacabs.lk/api/";
 
 
 
 /* user */
-export const createUser = baseUrl + "user";
+export const createUser = baseUrl + "register.php";
 export const getUsers = baseUrl + "users";
 
 /* bookings */

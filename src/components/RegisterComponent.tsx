@@ -3,6 +3,8 @@ import { useState, type FC, type FormEvent, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {UserIcon, EmailIcon, LockIcon, PhoneIcon, EyeIcon, CheckIcon, AlertIcon, EmailCheckIcon} from "../icons/RegisterIcons";
 import type {FormState, FormErrors} from "../classes/RegisterClass";
+import { useApiMutation, postData } from "../api/common";
+import { createUser} from "../api/APIclass";
 
 /* ══════════════════════════════════════════════════════════════
    HELPERS
@@ -64,6 +66,8 @@ const Register: FC = () => {
     if (!validate()) return;
     setLoading(true);
     await new Promise(r => setTimeout(r, 1600));
+    const responce = useApiMutation((form)=> postData(createUser, form))
+    console.log(responce);
     setLoading(false);
     setSuccess(true);
   };
