@@ -20,9 +20,9 @@ import { MonthGrid } from "../components/MonthGridComponent";
 import { DetailSheet } from "../components/EventDetailComponent";
 import { AgendaPanel } from "../components/AgendaPanelComponent";
 import { EventSheet } from "../components/EventSheetComponent";
-import { useQuery } from "@tanstack/react-query";
-// import { getUsers } from "../api/user";
-import axios from "axios";
+
+import { getAllUsers } from "../api/user";
+import { useApiQuery } from "../api/common";
 
 const NOW = new Date();
 const CY = NOW.getFullYear();
@@ -99,20 +99,10 @@ const MobiScrollCalendar: FC = () => {
 
   const agendaRef = useRef<HTMLDivElement | null>(null);
 
-  const fetchUser = () =>
-    axios.get("https://jsonplaceholder.typicode.com/users")
-         .then((res)=> res);
 
+  const todo = useApiQuery(["users"], getAllUsers);
 
-const {data : todo} = useQuery({
-  queryKey : ["users"],
-  queryFn : fetchUser,
-
-})
-
-console.log(todo?.data)
-
-
+  console.log(todo.data?.data)
 
   /* Track viewport */
   useEffect(() => {

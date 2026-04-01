@@ -1,26 +1,34 @@
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
-const baseUrl = "https://jsonplaceholder.typicode.com/";
+export interface ResponseObj<T> {
+  data: T | undefined;
+  error: Error | null;
+  isLoading: boolean;
+}
+
+export const getData = (url: string) =>
+    axios.get(url)
+         .then((res)=> res);
+
+export const postData = (url: string) =>
+    axios.post(url)
+         .then((res)=> res);
+
+export const putData = (url: string) =>
+    axios.post(url)
+         .then((res)=> res);
 
 
-export async function apiClient<T>(
-  endpoint: string,
-  options?: RequestInit
-): Promise<T> {
-  try {
-    const response = await fetch(baseUrl + endpoint, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      ...options,
-    });
+export function useApiQuery<T>(queryKey: string[], queryFn: () => Promise<T>) {
+  const { data, error, isLoading } = useQuery({
+    queryKey,
+    queryFn,
+  });
 
-    if (!response.ok) {
-      throw new Error(`Error ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("API ERROR:", error);
-    throw error;
-  }
+  return {
+    data,
+    error: error as Error | null,
+    isLoading,
+  };
 }
