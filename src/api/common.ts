@@ -11,8 +11,8 @@ export const getData = (url: string) =>
     axios.get(url)
          .then((res)=> res);
 
-export const postData = async (url: string, data?: any) =>
-    await axios.post(url, data)
+export const postData = (url: string, data?: any) =>
+    axios.post(url, data)
          .then((res)=> res);
 
 export const putData = (url: string) =>

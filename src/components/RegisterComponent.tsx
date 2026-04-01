@@ -66,7 +66,8 @@ const Register: FC = () => {
     if (!validate()) return;
     setLoading(true);
     await new Promise(r => setTimeout(r, 1600));
-    const responce = useApiMutation((form)=> postData(createUser, form))
+    // const responce = useApiMutation((form)=> postData(createUser, form))
+    const responce = postData(createUser, form);
     console.log(responce);
     setLoading(false);
     setSuccess(true);
