@@ -1,4 +1,4 @@
-const baseUrl = "http://sub.ohansacabs.lk/api/";
+const baseUrl = "https://sub.ohansacabs.lk/api/";
 
 
 
