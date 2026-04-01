@@ -1,7 +1,7 @@
 import "../css/RegisterComponent.scss";
 import { useState, type FC, type FormEvent, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import {UserIcon, EmailIcon, LockIcon, PhoneIcon, EyeIcon, CheckIcon, AlertIcon} from "../icons/RegisterIcons";
+import {UserIcon, EmailIcon, LockIcon, PhoneIcon, EyeIcon, CheckIcon, AlertIcon, EmailCheckIcon} from "../icons/RegisterIcons";
 import type {FormState, FormErrors} from "../classes/RegisterClass";
 
 /* ══════════════════════════════════════════════════════════════
@@ -33,6 +33,8 @@ const Register: FC = () => {
   const [showConf, setShowConf] = useState(false);
   const [loading,  setLoading]  = useState(false);
   const [success,  setSuccess]  = useState(false);
+  const [isemailverifid, setemailverify] = useState(false);
+  const [showemailverify, setshowemailverify] = useState(false);
 
   const strength = getStrength(form.password);
 
@@ -53,7 +55,6 @@ const Register: FC = () => {
     else if (strength < 2)        errs.password  = "Password is too weak";
     if (!form.confirm)            errs.confirm   = "Please confirm your password";
     else if (form.confirm !== form.password) errs.confirm = "Passwords do not match";
-    if (!form.terms)              errs.terms     = "You must accept the terms";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -84,9 +85,9 @@ const Register: FC = () => {
             <div className="success-icon"><CheckIcon/></div>
             <h2 className="success-title">You're all set, {form.firstName}!</h2>
             <p className="success-sub">
-              Your CalClone account has been created. Check your email at <strong>{form.email}</strong> to verify your address.
+              Your Sports Zone account has been created. Check your email at <strong>{form.email}</strong> to verify your address.
             </p>
-            <button className="success-btn" onClick={() => setSuccess(false)}>
+            <button className="success-btn" onClick={() => {setSuccess(false); navigate("/signin");}}>
               Go to Sign In
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -96,6 +97,35 @@ const Register: FC = () => {
         </div>
       </div>
     );
+  }
+
+   /* ── email verification screen ── */
+  if (showemailverify) {
+      return(
+        <div className="email-verify-container"> 
+           <div className="email-card">
+            <div className="email-header">
+                 <h2 className="success-title">Verify Email</h2>
+                 <p>Please enter the 6-digit code sent to your email</p>
+                 <div>
+                    <span className="alert-msg"> A verification code has been sent to your Email</span>
+                 </div>
+            </div>
+            <div className="email-body">
+              <input placeholder="......" className="email-verification-textbox" 
+                     pattern="\d{6}" maxLength={6}>
+              </input>
+            </div>
+            <div className="email-footer">
+              <button onClick={()=>{setshowemailverify(false); setemailverify(true);}}>Verify OTP</button>
+              <div className="email-footer-resend">
+            Didn't receive code?&nbsp;
+            <a onClick={()=> navigate("/signin")}>Resend Code</a>
+          </div>
+            </div>
+           </div>
+        </div>
+      )
   }
 
   return (
@@ -109,7 +139,7 @@ const Register: FC = () => {
 
           <div className="reg-header-eyebrow">Create account</div>
           <h1 className="reg-header-title">
-            Join <span>Sport Zone</span> today
+            Join <span>Sports Zone</span> today
           </h1>
 
           {/* Progress bar */}
@@ -133,7 +163,7 @@ const Register: FC = () => {
                 <label className="field-label" htmlFor="firstName">First name</label>
                 <div className="field-input-wrap">
                   <input id="firstName" name="firstName" type="text" autoComplete="given-name"
-                    placeholder="Ada" value={form.firstName} onChange={handleChange}
+                    placeholder="John" value={form.firstName} onChange={handleChange}
                     className={`field-input ${errors.firstName ? "error" : form.firstName ? "success" : ""}`}
                   />
                   <div className="field-icon"><UserIcon/></div>
@@ -146,7 +176,7 @@ const Register: FC = () => {
                 <label className="field-label" htmlFor="lastName">Last name</label>
                 <div className="field-input-wrap">
                   <input id="lastName" name="lastName" type="text" autoComplete="family-name"
-                    placeholder="Lovelace" value={form.lastName} onChange={handleChange}
+                    placeholder="Doe" value={form.lastName} onChange={handleChange}
                     className={`field-input ${errors.lastName ? "error" : form.lastName ? "success" : ""}`}
                   />
                   <div className="field-icon"><UserIcon/></div>
@@ -160,11 +190,15 @@ const Register: FC = () => {
               <div className="field-wrap">
                 <label className="field-label" htmlFor="email">Email address</label>
                 <div className="field-input-wrap">
-                  <input id="email" name="email" type="email" autoComplete="email"
+                  
+                  <input id="email" name="email" type="email" autoComplete="email" disabled={isemailverifid}
                     placeholder="ada@example.com" value={form.email} onChange={handleChange}
                     className={`field-input ${errors.email ? "error" : form.email ? "success" : ""}`}
                   />
-                  <div className="field-icon"><EmailIcon/></div>
+                 <div className="field-icon"><EmailIcon/></div>
+                 <button type="button" className="eye-btn verify-email" disabled={isemailverifid} onClick={() => setshowemailverify(p => !p)}>
+                    <EmailCheckIcon open={isemailverifid}/>
+                  </button>
                 </div>
                 {errors.email && <span className="field-err"><AlertIcon/>{errors.email}</span>}
               </div>
@@ -173,8 +207,8 @@ const Register: FC = () => {
               <div className="field-wrap">
                 <label className="field-label" htmlFor="phone">Phone <span style={{color:"var(--text-5)",fontWeight:500,textTransform:"none"}}></span></label>
                 <div className="field-input-wrap">
-                  <input id="phone" name="phone" type="tel" autoComplete="tel"
-                    placeholder="+1 (555) 000-0000" value={form.phone} onChange={handleChange}
+                  <input id="phone" name="phone" type="text" autoComplete="tel" pattern="\d{10}" maxLength={10}
+                    placeholder="0710100100" value={form.phone} onChange={handleChange}
                     className="field-input"
                   />
                   <div className="field-icon"><PhoneIcon/></div>
@@ -235,7 +269,7 @@ const Register: FC = () => {
               </div>
             </div>
 
-            <button type="submit" className="submit-btn" disabled={loading}>
+            <button type="submit" className="submit-btn" disabled={loading || !isemailverifid}>
               {loading ? (
                 <><div className="spinner"/><span>Creating account…</span></>
               ) : (

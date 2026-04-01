@@ -1,4 +1,4 @@
-import "./css/App.css";
+import "./css/App.scss";
 import NavBar from "./components/NavBar";
 import { Route, Routes, Navigate } from "react-router-dom";
 import MobiScrollCalendar from "./components/ResponsiveCalender";

@@ -42,3 +42,14 @@ export const AlertIcon: FC = () => (
     <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
   </svg>
 );
+
+export const EmailCheckIcon: FC<{ open: boolean }> = ({ open }) =>
+  open ? (
+     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#edf1ef" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+  ) : (
+     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#044920" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+  );  
