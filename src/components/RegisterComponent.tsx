@@ -108,7 +108,7 @@ const Register: FC = () => {
                  <h2 className="success-title">Verify Email</h2>
                  <p>Please enter the 6-digit code sent to your email</p>
                  <div>
-                    <span className="alert-msg"> A verification code has been sent to your Email</span>
+                    <p className="alert-msg"> A verification code has been sent to your Email</p>
                  </div>
             </div>
             <div className="email-body">
