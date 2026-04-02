@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export interface ResponseObj<T> {
   data: T | undefined;
@@ -7,23 +7,26 @@ export interface ResponseObj<T> {
   isLoading: boolean;
 }
 
-const config = {
-  headers:{
-    "Content-Type":"application/json",
-  }
-}
+// const config = {
+//   headers:{
+//     "Content-Type":"application/json",
+//   }
+// }
 
-export const getData = (url: string) =>
-    axios.get(url)
+export const getData = async (url: string) =>
+    await axios.get(url)
          .then((res)=> res);
 
-export const postData = (url: string, data?: any) =>
-    axios.post(url, data, config)
+export const postData = async(url: string, data?: any) =>
+    await axios.post(url, data)
          .then((res)=> res);
 
-export const putData = (url: string) =>
-    axios.post(url)
-         .then((res)=> res);
+export const putData = async ({id, data, url}: {
+  id: string; data: any; url: string }) => {
+  const res = await axios.put(url + id, data);
+  return res.data;
+};         
+
 
 
 export function useApiQuery<T>(queryKey: string[], queryFn: () => Promise<T>) {
@@ -39,17 +42,28 @@ export function useApiQuery<T>(queryKey: string[], queryFn: () => Promise<T>) {
   };
 }
 
-export function useApiMutation<T, V>(
-  mutationFn: (variables: V) => Promise<T>
-) {
-  const { mutate, data, error, isPending } = useMutation({
-    mutationFn,
-  });
+// export function useApiMutation<T, V>(
+//   mutationFn: (variables: V) => Promise<T>
+// ) {
+//   const { mutate, data, error, isPending } = useMutation({
+//     mutationFn,
+//   });
 
-  return {
-    mutate,
-    data,
-    error: error as Error | null,
-    isLoading: isPending,
-  };
-}
+//   return {
+//     mutate,
+//     data,
+//     error: error as Error | null,
+//     isLoading: isPending,
+//   };
+// }
+
+export const useApiMutation = (mutationFn: any, queryKey: string[]) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
+  });
+};

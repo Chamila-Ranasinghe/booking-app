@@ -5,4 +5,5 @@ import { getUsers, createUser} from "../api/APIclass";
 
 /* users */
 export const getAllUsers = () => getData(getUsers)
-export const saveUser = () => postData (createUser)
+
+export const saveUser = postData (createUser);

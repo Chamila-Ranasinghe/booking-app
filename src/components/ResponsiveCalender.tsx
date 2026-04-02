@@ -21,9 +21,6 @@ import { DetailSheet } from "../components/EventDetailComponent";
 import { AgendaPanel } from "../components/AgendaPanelComponent";
 import { EventSheet } from "../components/EventSheetComponent";
 
-// import { getAllUsers } from "../api/user";
-// import { useApiQuery } from "../api/common";
-
 const NOW = new Date();
 const CY = NOW.getFullYear();
 const CM = NOW.getMonth();

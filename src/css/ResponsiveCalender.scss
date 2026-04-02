@@ -21,12 +21,22 @@
   gap: 8px;
   padding: 0 16px;
   height: 58px;
-  border-bottom: 0px solid var(--border);
-  background-color: $AccentGreen;
+  // border-bottom: 0px solid var(--border);
+  // background-color: $AccentGreen;
   position: relative;
   z-index: 20;
   flex-shrink: 0;
   border-radius: 10px;
+  backdrop-filter: blur(5px);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 0.5px solid #757b77;
+  box-shadow:
+    0 8px 10px rgba(90, 89, 89, 0.4),
+    /* depth */ inset 0 1px 0 rgba(255, 255, 255, 0.1); /* inner shine */
 }
 .topbar-logo {
   display: flex;
@@ -58,7 +68,7 @@
   font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.4px;
-  color: var(--text-1);
+  color: $TextWhite;
   white-space: nowrap;
   min-width: 160px;
   text-align: center;
@@ -87,7 +97,7 @@
   flex-shrink: 0;
 }
 .icon-btn:hover {
-  background: var(--surface-3);
+  background: $AccentGreen;
   color: var(--text-1);
 }
 .icon-btn:active {
@@ -1136,7 +1146,7 @@
   }
   .topbar {
     padding: 0 24px;
-    border-bottom: 0px solid var(--border);
+    // border-bottom: 0px solid var(--border);
     margin-bottom: 10px;
   }
 
