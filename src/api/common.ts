@@ -7,12 +7,18 @@ export interface ResponseObj<T> {
   isLoading: boolean;
 }
 
+const config = {
+  headers:{
+    "Content-Type":"application/json",
+  }
+}
+
 export const getData = (url: string) =>
     axios.get(url)
          .then((res)=> res);
 
 export const postData = (url: string, data?: any) =>
-    axios.post(url, data)
+    axios.post(url, data, config)
          .then((res)=> res);
 
 export const putData = (url: string) =>

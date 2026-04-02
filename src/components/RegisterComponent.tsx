@@ -90,7 +90,7 @@ const Register: FC = () => {
             <div className="success-icon"><CheckIcon/></div>
             <h2 className="success-title">You're all set, {form.firstName}!</h2>
             <p className="success-sub">
-              Your Sports Zone account has been created. Check your email at <strong>{form.email}</strong> to verify your address.
+              Your Sports Zone account has been created. SignIn to start booking !
             </p>
             <button className="success-btn" onClick={() => {setSuccess(false); navigate("/signin");}}>
               Go to Sign In
