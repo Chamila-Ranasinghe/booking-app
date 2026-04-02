@@ -3,8 +3,9 @@ import { useState, type FC, type FormEvent, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {UserIcon, EmailIcon, LockIcon, PhoneIcon, EyeIcon, CheckIcon, AlertIcon, EmailCheckIcon} from "../icons/RegisterIcons";
 import type {FormState, FormErrors} from "../classes/RegisterClass";
-import { postData, useApiMutation } from "../api/common";
-import { createUser} from "../api/APIclass";
+import { createRecords, useApiMutation } from "../api/common";
+import { createUser } from "../api/APIclass";
+
 
 /* ══════════════════════════════════════════════════════════════
    HELPERS
@@ -24,6 +25,8 @@ const BAR_CLASSES = ["","active-weak","active-fair","active-good","active-strong
 
 
 const Register: FC = () => {
+
+  const createUserMutation = useApiMutation(createRecords(createUser), ["users"]);
 
   const navigate = useNavigate();
   const [form,    setForm]    = useState<FormState>({
@@ -68,8 +71,11 @@ const Register: FC = () => {
     await new Promise(r => setTimeout(r, 1600));
     // const responce = useApiMutation((form)=> postData(createUser, form))
     // const responce = postData(createUser, form);
-    const responce = useApiMutation(postData(createUser, form), ["users"]);
-    console.log(responce);
+    
+    const data = createUserMutation.mutate({
+      form
+    });
+    console.log(data);
     setLoading(false);
     setSuccess(true);
   };

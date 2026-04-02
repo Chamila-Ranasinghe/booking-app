@@ -1,31 +1,39 @@
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
+
 export interface ResponseObj<T> {
   data: T | undefined;
   error: Error | null;
   isLoading: boolean;
 }
 
-// const config = {
-//   headers:{
-//     "Content-Type":"application/json",
-//   }
-// }
 
-export const getData = async (url: string) =>
-    await axios.get(url)
-         .then((res)=> res);
 
-export const postData = async(url: string, data?: any) =>
-    await axios.post(url, data)
-         .then((res)=> res);
-
-export const putData = async ({id, data, url}: {
-  id: string; data: any; url: string }) => {
-  const res = await axios.put(url + id, data);
+// GET
+export const getRecords  = async () => {
+  const res = await axios.get("/users");
   return res.data;
-};         
+};
+
+// POST
+export const createRecords = (url: string) => {
+  return async (data: any) => {
+    const res = await axios.post(url, data);
+    return res.data;
+  };
+};
+
+// UPDATE
+export const updateRecords  = async ({ id, data }: any) => {
+  const res = await axios.put(`/users/${id}`, data);
+  return res.data;
+};
+
+// DELETE
+export const deleteRecords = async (id: string) => {
+  await axios.delete(`/users/${id}`);
+};        
 
 
 
@@ -42,27 +50,16 @@ export function useApiQuery<T>(queryKey: string[], queryFn: () => Promise<T>) {
   };
 }
 
-// export function useApiMutation<T, V>(
-//   mutationFn: (variables: V) => Promise<T>
-// ) {
-//   const { mutate, data, error, isPending } = useMutation({
-//     mutationFn,
-//   });
-
-//   return {
-//     mutate,
-//     data,
-//     error: error as Error | null,
-//     isLoading: isPending,
-//   };
-// }
-
-export const useApiMutation = (mutationFn: any, queryKey: string[]) => {
+export const useApiMutation = (
+  mutationFn: (data: any) => Promise<any>,
+  queryKey: string[]
+) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn,
     onSuccess: () => {
+      // auto refresh related data
       queryClient.invalidateQueries({ queryKey });
     },
   });
