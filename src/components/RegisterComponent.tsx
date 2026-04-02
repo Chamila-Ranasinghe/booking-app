@@ -3,7 +3,7 @@ import { useState, type FC, type FormEvent, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {UserIcon, EmailIcon, LockIcon, PhoneIcon, EyeIcon, CheckIcon, AlertIcon, EmailCheckIcon} from "../icons/RegisterIcons";
 import type {FormState, FormErrors} from "../classes/RegisterClass";
-import { postData, useApiMutation } from "../api/common";
+import { postData } from "../api/common";
 import { createUser} from "../api/APIclass";
 
 /* ══════════════════════════════════════════════════════════════
@@ -66,8 +66,8 @@ const Register: FC = () => {
     if (!validate()) return;
     setLoading(true);
     await new Promise(r => setTimeout(r, 1600));
-    const responce = useApiMutation((form)=> postData(createUser, form))
-    // const responce = postData(createUser, form);
+    // const responce = useApiMutation((form)=> postData(createUser, form))
+    const responce = postData(createUser, form);
     console.log(responce);
     setLoading(false);
     setSuccess(true);
@@ -85,7 +85,7 @@ const Register: FC = () => {
   if (success) {
     return (
       <div className="reg-page">
-        <div className="reg-card">
+        <div className="reg-card-success">
           <div className="success-screen">
             <div className="success-icon"><CheckIcon/></div>
             <h2 className="success-title">You're all set, {form.firstName}!</h2>
