@@ -73,9 +73,9 @@ const Register: FC = () => {
     // const responce = postData(createUser, form);
     const jsonfromdata = JSON.stringify(form);
     console.log(jsonfromdata);
-    const data = createUserMutation.mutate({
-      jsonfromdata
-    });
+    const data = createUserMutation.mutate(
+      form
+    );
     console.log(data);
     setLoading(false);
     setSuccess(true);
