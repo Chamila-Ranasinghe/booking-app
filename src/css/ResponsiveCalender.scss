@@ -26,17 +26,20 @@
   position: relative;
   z-index: 20;
   flex-shrink: 0;
-  border-radius: 10px;
-  backdrop-filter: blur(5px);
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.04),
-    rgba(255, 255, 255, 0.02)
-  );
-  border: 0.5px solid #757b77;
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(35px);
+  // background: linear-gradient(
+  //   145deg,
+  //   rgba(255, 255, 255, 0.04),
+  //   rgba(255, 255, 255, 0.02)
+  // );
+  // border: 0.5px solid #161515;
   box-shadow:
     0 8px 10px rgba(90, 89, 89, 0.4),
     /* depth */ inset 0 1px 0 rgba(255, 255, 255, 0.1); /* inner shine */
+  box-shadow:
+    inset -4px -4px 8px #161515,
+    inset  4px  4px 8px #998c8c;  
 }
 .topbar-logo {
   display: flex;
@@ -1226,8 +1229,9 @@
     background: $PrimaryBlack;
   }
   .day-cell.outside {
-    background: var(--surface-2);
+    background: #2f32377a;
     opacity: 1;
+    cursor: not-allowed;
   }
   .day-cell.outside .day-num {
     color: var(--text-5);
@@ -1251,7 +1255,9 @@
   }
   .day-cell.col-0.outside,
   .day-cell.col-6.outside {
-    background: var(--surface-2);
+    background: #2f32377a;
+    opacity: 1;
+    cursor: not-allowed;
   }
 
   /* Selected day: clear blue wash */
