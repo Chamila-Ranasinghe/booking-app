@@ -9,7 +9,6 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -19,6 +18,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { useNavigate , useLocation } from "react-router-dom";
+import menuicon from "../assets/menu.svg"; 
 
 interface Props {
   window?: () => Window;
@@ -91,6 +91,8 @@ export default function NavBar(props: Props) {
       <CssBaseline />
       <AppBar component="nav" className="myAppBar">
         <Toolbar className="tool-bar">
+
+          
           <IconButton
             color="info"
             aria-label="open drawer"
@@ -99,7 +101,7 @@ export default function NavBar(props: Props) {
             className="iconbutton-mobile"
             sx={{ mr: 2, display: { sm: "none" } }}
           >
-            <MenuIcon />
+          <img src={menuicon}></img>
           </IconButton>
           <Typography
             variant="h6"
