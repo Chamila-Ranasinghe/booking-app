@@ -31,7 +31,7 @@ const Register: FC = () => {
   const navigate = useNavigate();
   const [form,    setForm]    = useState<FormState>({
     firstName:"", lastName:"", email:"", phone:"",
-    password:"", confirm:"", plan:"pro", terms: false,
+    password:"", confirm:""
   });
   const [errors,   setErrors]   = useState<FormErrors>({});
   const [showPwd,  setShowPwd]  = useState(false);
@@ -71,9 +71,10 @@ const Register: FC = () => {
     await new Promise(r => setTimeout(r, 1600));
     // const responce = useApiMutation((form)=> postData(createUser, form))
     // const responce = postData(createUser, form);
-    
+    const jsonfromdata = JSON.stringify(form);
+    console.log(jsonfromdata);
     const data = createUserMutation.mutate({
-      form
+      jsonfromdata
     });
     console.log(data);
     setLoading(false);

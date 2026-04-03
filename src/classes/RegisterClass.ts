@@ -7,8 +7,6 @@ export interface FormState {
   phone:     string;
   password:  string;
   confirm:   string;
-  plan:      "free" | "pro" | "team";
-  terms:     boolean;
 }
 
 export interface FormErrors {
