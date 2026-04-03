@@ -20,7 +20,7 @@ export const getRecords  = async () => {
 export const createRecords = (url: string) => {
   return async (data: any) => {
     const res = await axios.post(url, data);
-    return res.data;
+    return res;
   };
 };
 
@@ -58,8 +58,9 @@ export const useApiMutation = (
 
   return useMutation({
     mutationFn,
-    onSuccess: () => {
+    onSuccess: (data) => {
       // auto refresh related data
+      console.log("API Response:", data);
       queryClient.invalidateQueries({ queryKey });
     },
   });
