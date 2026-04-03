@@ -69,14 +69,10 @@ const Register: FC = () => {
     if (!validate()) return;
     setLoading(true);
     await new Promise(r => setTimeout(r, 1600));
-    // const responce = useApiMutation((form)=> postData(createUser, form))
-    // const responce = postData(createUser, form);
-    const jsonfromdata = JSON.stringify(form);
-    console.log(jsonfromdata);
-    const data = createUserMutation.mutate(
+    createUserMutation.mutate(
       form
     );
-    console.log(data);
+    console.log(createUserMutation);
     setLoading(false);
     setSuccess(true);
   };
