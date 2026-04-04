@@ -2,9 +2,9 @@ import "../css/RegisterComponent.scss";
 import { useState, type FC, type FormEvent, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {UserIcon, EmailIcon, LockIcon, PhoneIcon, EyeIcon, CheckIcon, AlertIcon, EmailCheckIcon} from "../icons/RegisterIcons";
-import type {FormState, FormErrors} from "../classes/RegisterClass";
+import type {FormState, FormErrors } from "../classes/RegisterClass";
 import { createRecords, useApiMutation } from "../api/common";
-import { createUser } from "../api/APIclass";
+import { createUser, verifyemail } from "../api/APIclass";
 
 
 /* ══════════════════════════════════════════════════════════════
@@ -27,12 +27,15 @@ const BAR_CLASSES = ["","active-weak","active-fair","active-good","active-strong
 const Register: FC = () => {
 
   const createUserMutation = useApiMutation(createRecords(createUser), ["users"]);
+  const verifyUseremail = useApiMutation(createRecords(verifyemail), ["email_verify"]);
 
   const navigate = useNavigate();
   const [form,    setForm]    = useState<FormState>({
     firstName:"", lastName:"", email:"", phone:"",
     password:"", confirm:""
   });
+  
+
   const [errors,   setErrors]   = useState<FormErrors>({});
   const [showPwd,  setShowPwd]  = useState(false);
   const [showConf, setShowConf] = useState(false);
@@ -40,6 +43,9 @@ const Register: FC = () => {
   const [success,  setSuccess]  = useState(false);
   const [isemailverifid, setemailverify] = useState(false);
   const [showemailverify, setshowemailverify] = useState(false);
+
+  const [emailVerify, setEmailVerify] = useState<string>("");
+  const [errorsOnEmailVerify ] = useState<string>("");
 
   const strength = getStrength(form.password);
 
@@ -85,6 +91,25 @@ const Register: FC = () => {
     }
   };
 
+  // const handleEmailVerify =()=> {
+  //   // preventDefault();
+  //   serEmailVerifyErrors("Verification code mismatch !");
+  //   // setshowemailverify(false);
+  //   // setemailverify(true); // once the API return a verified email
+  // }
+
+  const handleEmailVerify = () => {
+    // serEmailVerifyErrors("Verification code mismatch !");
+    verifyUseremail.mutate(
+      emailVerify
+    );
+    console.log(verifyUseremail);
+    setshowemailverify(false);
+    setemailverify(true); // once the API return a verified email
+  };
+
+
+
   /* ── Success screen ── */
   if (success) {
     return (
@@ -110,31 +135,49 @@ const Register: FC = () => {
 
    /* ── email verification screen ── */
   if (showemailverify) {
-      return(
-        <div className="email-verify-container"> 
-           <div className="email-card">
+    return (
+      <div className="email-verify-container">
+          <div className="email-card">
             <div className="email-header">
-                 <h2 className="success-title">Verify Email</h2>
-                 <p>Please enter the 6-digit code sent to your email</p>
-                 <div>
-                    <p className="alert-msg"> A verification code has been sent to your Email</p>
-                 </div>
+              <h2 className="success-title">Verify Email</h2>
+              <p>Please enter the 6-digit code sent to your email</p>
+              <div>
+                <p className="alert-msg">
+                  A verification code has been sent to your Email
+                </p>
+              </div>
             </div>
             <div className="email-body">
-              <input placeholder="......" className="email-verification-textbox" 
-                     pattern="\d{6}" maxLength={6}>
-              </input>
+              <input
+                id="verifyc"
+                placeholder="......"
+                className="email-verification-textbox"
+                pattern="\d{6}"
+                maxLength={6}
+                onChange={(e) => {
+                  let value = e.target.value
+                  if (/^\d*$/.test(value)) {setEmailVerify(value)}
+                  }}
+                value={emailVerify}
+              ></input>
+              {errorsOnEmailVerify && <span className="field-err verify-err"><AlertIcon/>{errorsOnEmailVerify}</span>}
             </div>
             <div className="email-footer">
-              <button onClick={()=>{setshowemailverify(false); setemailverify(true);}}>Verify OTP</button>
+              <button
+                className="submit-btn"
+                disabled={emailVerify?.length <= 5}
+                onClick={handleEmailVerify}
+              >
+                Verify OTP
+              </button>
               <div className="email-footer-resend">
-            Didn't receive code?&nbsp;
-            <a onClick={()=> navigate("/signin")}>Resend Code</a>
-          </div>
+                Didn't receive code?&nbsp;
+                <a onClick={() => navigate("/signin")}>Resend Code</a>
+              </div>
             </div>
-           </div>
-        </div>
-      )
+          </div>
+      </div>
+    );
   }
 
   return (
