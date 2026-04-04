@@ -109,7 +109,7 @@ const Register: FC = () => {
   const hadleCheckEmail = () =>{
     setshowemailverify(p => !p)
     verifyUseremail.mutate(
-      emailVerify
+      form.email
     );
   }
 
