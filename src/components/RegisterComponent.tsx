@@ -100,13 +100,18 @@ const Register: FC = () => {
 
   const handleEmailVerify = () => {
     // serEmailVerifyErrors("Verification code mismatch !");
-    verifyUseremail.mutate(
-      emailVerify
-    );
+    
     console.log(verifyUseremail);
     setshowemailverify(false);
     setemailverify(true); // once the API return a verified email
   };
+
+  const hadleCheckEmail = () =>{
+    setshowemailverify(p => !p)
+    verifyUseremail.mutate(
+      emailVerify
+    );
+  }
 
 
 
@@ -248,7 +253,7 @@ const Register: FC = () => {
                     className={`field-input ${errors.email ? "error" : form.email ? "success" : ""}`}
                   />
                  <div className="field-icon"><EmailIcon/></div>
-                 <button type="button" className="eye-btn verify-email" disabled={isemailverifid} onClick={() => setshowemailverify(p => !p)}>
+                 <button type="button" className="eye-btn verify-email" disabled={isemailverifid} onClick={hadleCheckEmail}>
                     <EmailCheckIcon open={isemailverifid}/>
                   </button>
                 </div>
