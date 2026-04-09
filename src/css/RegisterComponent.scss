@@ -815,7 +815,7 @@ body,
 
     p {
       color: $TextWhite;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
       font-size: 14px;
     }
 
@@ -828,6 +828,13 @@ body,
       font-size: 14px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .error{
+      color: $TextWhite;
+    }
+    .error-email{
+      color: $HoverGreen;
     }
   }
 
@@ -874,5 +881,15 @@ body,
       }
     }
   }
+
+  .back-button-div{
+     margin-bottom: 20px;
+    .back-button{
+      width: 70px;
+      height: 30px
+    }
+  }
+
+
 
 }

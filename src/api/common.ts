@@ -4,8 +4,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export interface ResponseObj<T> {
   data: T | undefined;
-  error: Error | null;
-  isLoading: boolean;
+  error: string;
+  message: string;
+  success: boolean;
 }
 
 
@@ -20,7 +21,7 @@ export const getRecords  = async () => {
 export const createRecords = (url: string) => {
   return async (data: any) => {
     const res = await axios.post(url, data);
-    return res;
+    return res.data;
   };
 };
 
@@ -58,9 +59,8 @@ export const useApiMutation = (
 
   return useMutation({
     mutationFn,
-    onSuccess: (data) => {
+    onSuccess: () => {
       // auto refresh related data
-      console.log("API Response:", data);
       queryClient.invalidateQueries({ queryKey });
     },
   });

@@ -3,8 +3,10 @@ import { useState, type FC, type FormEvent, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {UserIcon, EmailIcon, LockIcon, PhoneIcon, EyeIcon, CheckIcon, AlertIcon, EmailCheckIcon} from "../icons/RegisterIcons";
 import type {FormState, FormErrors } from "../classes/RegisterClass";
-import { createRecords, useApiMutation } from "../api/common";
-import { createUser, verifyemail } from "../api/APIclass";
+import { createRecords, useApiMutation, type ResponseObj } from "../api/common";
+import { createUser, OtpVerification, verifyemail } from "../api/APIclass";
+import ThreeDots from "./ThreeDots";
+
 
 
 /* ══════════════════════════════════════════════════════════════
@@ -28,6 +30,7 @@ const Register: FC = () => {
 
   const createUserMutation = useApiMutation(createRecords(createUser), ["users"]);
   const verifyUseremail = useApiMutation(createRecords(verifyemail), ["email_verify"]);
+  const OTPverification = useApiMutation(createRecords(OtpVerification), ["otp-verification"]);
 
   const navigate = useNavigate();
   const [form,    setForm]    = useState<FormState>({
@@ -43,9 +46,11 @@ const Register: FC = () => {
   const [success,  setSuccess]  = useState(false);
   const [isemailverifid, setemailverify] = useState(false);
   const [showemailverify, setshowemailverify] = useState(false);
+  const [showEmailverifyError, setemailverifyerrorPage] = useState(false);
+  const [emailVerifyErrorMessage, setemailVerifyErrorMessage] = useState("");
 
   const [emailVerify, setEmailVerify] = useState<string>("");
-  const [errorsOnEmailVerify ] = useState<string>("");
+  const [errorsOnOTPVerify, setErrorsOnOTPverify ] = useState<string>("");
 
   const strength = getStrength(form.password);
 
@@ -74,13 +79,22 @@ const Register: FC = () => {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1600));
     createUserMutation.mutate(
-      form
+      form, {
+        onSuccess: (data : ResponseObj<any>) => {
+          if(data.success){
+              setLoading(false);
+              setSuccess(true);
+              navigate("/calendar")
+          }
+          else{
+
+          }
+      },
+        onError(){
+        }
+      }
     );
-    console.log(createUserMutation);
-    setLoading(false);
-    setSuccess(true);
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -91,32 +105,63 @@ const Register: FC = () => {
     }
   };
 
-  // const handleEmailVerify =()=> {
-  //   // preventDefault();
-  //   serEmailVerifyErrors("Verification code mismatch !");
-  //   // setshowemailverify(false);
-  //   // setemailverify(true); // once the API return a verified email
-  // }
-
   const handleEmailVerify = () => {
-    // serEmailVerifyErrors("Verification code mismatch !");
-    
-    console.log(verifyUseremail);
-    setshowemailverify(false);
-    setemailverify(true); // once the API return a verified email
+    let requestObj = {
+      code: emailVerify,
+      email: form.email
+    };
+    OTPverification.mutate(
+      requestObj, {
+        onSuccess: (data : ResponseObj<any>) => {
+          if(data.success){
+            setshowemailverify(false);
+            setemailverify(true);
+          }
+          else{
+            setshowemailverify(true);
+            setemailverify(false);
+            setErrorsOnOTPverify(data.error)
+          }
+      },
+      onError:() =>{
+      }
+  })
   };
 
-  const hadleCheckEmail = () =>{
-    setshowemailverify(p => !p)
-    let requestObj = {
-      email : form.email
+  const hadleCheckEmail = () => {
+    let errs: FormErrors = {};
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)){
+        errs.email ="Enter a valid email";
+        setErrors(errs);
+        return;
     }
-    verifyUseremail.mutate(
-      requestObj
-    );
+    setshowemailverify(true);
+    let requestObj = {
+      email: form.email,
+    };
+
+    verifyUseremail.mutate(requestObj, {
+      onSuccess: (data : ResponseObj<any>) => {
+          if(data.success){
+              setemailVerifyErrorMessage("");
+              setemailverifyerrorPage(false);
+          }
+          else{
+             setemailVerifyErrorMessage(data.error);
+             setemailverifyerrorPage(true);
+          }
+      },
+      onError:() =>{
+          setemailVerifyErrorMessage("Error occoure while verifying the email!");
+          setemailverifyerrorPage(true);
+      }
+    });
+  };
+
+  const handleEmailVerifyBack = ()=>{
+      setshowemailverify(false);
+      setemailverify(false);
   }
-
-
 
   /* ── Success screen ── */
   if (success) {
@@ -143,9 +188,25 @@ const Register: FC = () => {
 
    /* ── email verification screen ── */
   if (showemailverify) {
-    return (
+    
+    return(
+
+      verifyUseremail.isPending ? ( <div className=""><ThreeDots /></div>) : 
+      (<>
       <div className="email-verify-container">
           <div className="email-card">
+            <div className="back-button-div">
+                <button className="submit-btn back-button" onClick={handleEmailVerifyBack}>↩ Back</button>
+            </div>
+            {showEmailverifyError ? 
+            (
+              <div className="email-header error">
+                  <h2 className="success-title error">Email Validation Error !</h2>
+                  <span className="error-email">{form.email} ,</span>
+                  <p className="error">{ emailVerifyErrorMessage }</p>
+              </div>
+            ): (
+            <>
             <div className="email-header">
               <h2 className="success-title">Verify Email</h2>
               <p>Please enter the 6-digit code sent to your email</p>
@@ -168,23 +229,25 @@ const Register: FC = () => {
                   }}
                 value={emailVerify}
               ></input>
-              {errorsOnEmailVerify && <span className="field-err verify-err"><AlertIcon/>{errorsOnEmailVerify}</span>}
+              {errorsOnOTPVerify && <span className="field-err verify-err"><AlertIcon/>{errorsOnOTPVerify}</span>}
             </div>
             <div className="email-footer">
               <button
                 className="submit-btn"
-                disabled={emailVerify?.length <= 5}
+                disabled={emailVerify?.length <= 5 && verifyUseremail.isPending}
                 onClick={handleEmailVerify}
               >
                 Verify OTP
               </button>
               <div className="email-footer-resend">
                 Didn't receive code?&nbsp;
-                <a onClick={() => navigate("/signin")}>Resend Code</a>
+                <a onClick={hadleCheckEmail}>Resend Code</a>
               </div>
-            </div>
+            </div> </>)} 
+
           </div>
       </div>
+      </>)
     );
   }
 
