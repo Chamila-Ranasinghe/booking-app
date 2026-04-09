@@ -21,7 +21,7 @@ const SignIn: FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState(false);
+  const [SigninpageErrors, setSigninPageErrors] = useState("");
 
   const validate = (): boolean => {
     const errs: FormErrors = {};
@@ -38,7 +38,6 @@ const SignIn: FC = () => {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1400));
     let requestobject = {
       email: form.email,
       password: form.password,
@@ -47,18 +46,16 @@ const SignIn: FC = () => {
       onSuccess: (data: ResponseObj<any>) => {
         setLoading(false);
         if (data.success) {
-            setToast(true);
-            // setTimeout(() => setToast(false), 3000);
+          navigate("/calendar");
         } else {
-
+          setSigninPageErrors(data.error);
         }
       },
-      onError() {},
+      onError: (data) => {
+         setLoading(false);
+         setSigninPageErrors(data.message);
+      },
     });
-
-    
-    
-    
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -171,6 +168,24 @@ const SignIn: FC = () => {
               </div>
             </div>
 
+<div className="common-error">
+            {SigninpageErrors && (
+              <span className="field-err">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                {SigninpageErrors}
+              </span>
+            )}</div>
             <button type="submit" className="submit-btn" disabled={loading}>
               {loading ? (
                 <>
@@ -203,14 +218,6 @@ const SignIn: FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Toast */}
-      {toast && (
-        <div className="toast">
-          <div className="toast-dot" />
-          Signed in successfully! Redirecting…
-        </div>
-      )}
     </div>
   );
 };

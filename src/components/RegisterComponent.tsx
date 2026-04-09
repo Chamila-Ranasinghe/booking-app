@@ -85,7 +85,6 @@ const Register: FC = () => {
           if(data.success){
               setLoading(false);
               setSuccess(true);
-              navigate("/calendar")
           }
           else{
 
