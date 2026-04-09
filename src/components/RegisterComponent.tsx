@@ -231,13 +231,24 @@ const Register: FC = () => {
               {errorsOnOTPVerify && <span className="field-err verify-err"><AlertIcon/>{errorsOnOTPVerify}</span>}
             </div>
             <div className="email-footer">
+
               <button
                 className="submit-btn"
-                disabled={emailVerify?.length <= 5 && verifyUseremail.isPending}
+                disabled={emailVerify?.length <= 5}
                 onClick={handleEmailVerify}
               >
-                Verify OTP
+              {OTPverification.isPending ? (
+                <><div className="spinner"/><span>Verifying…</span></>
+              ) : (
+                <>
+                  Verify OTP
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </>
+              )}  
               </button>
+
               <div className="email-footer-resend">
                 Didn't receive code?&nbsp;
                 <a onClick={hadleCheckEmail}>Resend Code</a>
