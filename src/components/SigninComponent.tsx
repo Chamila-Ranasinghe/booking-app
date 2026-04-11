@@ -6,6 +6,7 @@ import type { FormState, FormErrors } from "../classes/SignInClass";
 import { createRecords, useApiMutation, type ResponseObj } from "../api/common";
 import { loginuser } from "../api/APIclass";
 import { useAuth } from "./AuthManager/AuthContext";
+import type { User } from "../classes/CalendarClass";
 
 /* ══════════════════════════════════════════════════════════════
    COMPONENT
@@ -47,9 +48,19 @@ const SignIn: FC = () => {
     loginUserMutation.mutate(requestobject, {
       onSuccess: (data: ResponseObj<any>) => {
         setLoading(false);
+        const userdata : User = {email: "", firstname: "", id:0, lastname: "", phone: 0, regDate:"", userType:""};
         if (data.success) {
-          console.log(data.data);
-          login(data.data); 
+          data?.data.map((data : any)=>{
+             userdata.email = data.email;
+             userdata.firstname = data.first_name;
+             userdata.lastname = data.last_name;
+             userdata.id = data.id;
+             userdata.phone = data.phone;
+             userdata.regDate = data.reg_date;
+             userdata.userType = data.user_type;
+          });
+          console.log(userdata);
+          login({user: userdata}); 
           navigate("/calendar");
         } else {
           setSigninPageErrors(data.error);

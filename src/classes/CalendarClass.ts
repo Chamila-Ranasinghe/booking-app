@@ -65,7 +65,11 @@ export interface EventSheetProps {
 }
 
 export interface User {
-  id: number;
-  name: string;
-  email: string;
+  id?: number;
+  email?: string;
+  firstname?: string;
+  lastname?: string;
+  phone?: number;
+  userType?: string;
+  regDate?: string;
 }

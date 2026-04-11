@@ -1,14 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import type { User } from "../../classes/CalendarClass";
 
-type User = {
-  id: number;
-  firstname: string;
-  lastname: string;
-  email: string;
-  phone : number;
-  userType: string;
-  regDate: string;
-};
+
+
 
 type AuthContextType = {
   user: User | null;
