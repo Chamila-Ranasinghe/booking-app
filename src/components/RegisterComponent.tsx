@@ -51,6 +51,7 @@ const Register: FC = () => {
 
   const [emailVerify, setEmailVerify] = useState<string>("");
   const [errorsOnOTPVerify, setErrorsOnOTPverify ] = useState<string>("");
+  const [RegisterpageErrors, setRegisterPageErrors] = useState("");
 
   const strength = getStrength(form.password);
 
@@ -82,15 +83,18 @@ const Register: FC = () => {
     createUserMutation.mutate(
       form, {
         onSuccess: (data : ResponseObj<any>) => {
+          setLoading(false);
           if(data.success){
               setLoading(false);
               setSuccess(true);
           }
           else{
-
+            setRegisterPageErrors(data.error)
           }
       },
-        onError(){
+        onError(data){
+          setLoading(false);
+          setRegisterPageErrors(data.message);
         }
       }
     );
@@ -195,7 +199,11 @@ const Register: FC = () => {
       <div className="email-verify-container">
           <div className="email-card">
             <div className="back-button-div">
-                <button className="submit-btn back-button" onClick={handleEmailVerifyBack}>↩ Back</button>
+                <button className="submit-btn back-button" onClick={handleEmailVerifyBack}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                  </svg>Back
+                  </button>
             </div>
             {showEmailverifyError ? 
             (
@@ -234,7 +242,7 @@ const Register: FC = () => {
 
               <button
                 className="submit-btn"
-                disabled={emailVerify?.length <= 5}
+                disabled={emailVerify?.length <= 5 || OTPverification.isPending}
                 onClick={handleEmailVerify}
               >
               {OTPverification.isPending ? (
@@ -402,6 +410,9 @@ const Register: FC = () => {
               </div>
             </div>
 
+            <div className="common-error">
+              {RegisterpageErrors && <span className="field-err verify-err"><AlertIcon/>{RegisterpageErrors}</span>}
+            </div>
             <button type="submit" className="submit-btn" disabled={loading || !isemailverifid}>
               {loading ? (
                 <><div className="spinner"/><span>Creating account…</span></>

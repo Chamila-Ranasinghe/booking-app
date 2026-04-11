@@ -5,12 +5,14 @@ import { EmailIcon, LockIcon, EyeIcon } from "../icons/SignInIcons";
 import type { FormState, FormErrors } from "../classes/SignInClass";
 import { createRecords, useApiMutation, type ResponseObj } from "../api/common";
 import { loginuser } from "../api/APIclass";
+import { useAuth } from "./AuthManager/AuthContext";
 
 /* ══════════════════════════════════════════════════════════════
    COMPONENT
 ══════════════════════════════════════════════════════════════ */
 const SignIn: FC = () => {
   const loginUserMutation = useApiMutation(createRecords(loginuser), ["users"]);
+  const { login } = useAuth();
 
   const navigate = useNavigate();
   const [form, setForm] = useState<FormState>({
@@ -46,6 +48,8 @@ const SignIn: FC = () => {
       onSuccess: (data: ResponseObj<any>) => {
         setLoading(false);
         if (data.success) {
+          console.log(data.data);
+          login(data.data); 
           navigate("/calendar");
         } else {
           setSigninPageErrors(data.error);
