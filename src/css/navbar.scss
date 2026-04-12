@@ -21,8 +21,8 @@
     text-transform: none;
 
     &:hover {
-      background-color: $HoverGreen;
-      color: $black;
+      // background-color: $HoverGreen;
+      color: $HoverGreen;
       transform: translateY(-1px);
     }
   }
