@@ -1,0 +1,24 @@
+import { Navigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+import type { JSX } from "react";
+import ThreeDots from "../ThreeDots";
+
+const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+  const { user, isAuthReady } = useAuth();
+
+  if (!isAuthReady) {
+    return (
+      <div>
+        <ThreeDots />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
+
+  return children;
+};
+
+export default ProtectedRoute;

@@ -6,7 +6,7 @@
     color: $white;
   }
 
-  .iconbutton-mobile{
+  .iconbutton-mobile {
     color: $TextWhite;
   }
 
@@ -17,6 +17,8 @@
     margin: 5px;
     font-family: "Outfit";
     transition: background 0.2s, transform 0.15s;
+    // border-radius: var(--radius-pill);
+    text-transform: none;
 
     &:hover {
       background-color: $HoverGreen;
@@ -52,31 +54,31 @@
   }
 
   .logged-profile {
-      position: absolute;
-      right: 15px;
-    }
+    position: absolute;
+    right: 15px;
+  }
 
-  .signIn{
+  .signIn {
     position: absolute;
     right: 15px;
     top: 10px;
-  }  
-
-  .active{
-    background-color: $HoverGreen;
-    color: $TextWhite;
   }
 
-//   .menubutton:focus {
-//   outline: 2px solid rgba(0, 255, 170, 0.5);
-//   outline-offset: 2px;
-// }
-
-.MuiBox-root{
-  a{
-    display: contents;
+  .active {
+    // background-color: $HoverGreen;
+    color: $HoverGreen;
   }
-}
+
+  //   .menubutton:focus {
+  //   outline: 2px solid rgba(0, 255, 170, 0.5);
+  //   outline-offset: 2px;
+  // }
+
+  .MuiBox-root {
+    a {
+      display: contents;
+    }
+  }
 
   @media (min-width: 600px) {
     .tool-bar {
@@ -88,6 +90,13 @@
     .company-name {
       display: none;
     }
+
+    .signIn {
+      position: absolute;
+      right: 15px;
+      top: 5px;
+    }
+
   }
 
   @media (min-width: 600px) and (max-width: 650px) {
@@ -98,38 +107,46 @@
   }
 
   .navlink {
-  color: #fff;
-  text-decoration: none;
-  transition: 0.3s;
+    color: #fff;
+    text-decoration: none;
+    transition: 0.3s;
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
   }
-}
 
-.navlink.active {
-  color: $AccentGreen;
-  border-bottom: 2px solid #00ffaa;
+  .navlink.active {
+    color: $AccentGreen;
+    border-bottom: 2px solid #00ffaa;
 
-  .MuiListItemText-root{
-    background-color: #fff;
-    padding: 10px;
+    .MuiListItemText-root {
+      background-color: #fff;
+      padding: 10px;
+    }
   }
-}
 
-.MuiListItemText-root{
-    span{
+  .MuiListItemText-root {
+    span {
       font-family: "Outfit";
     }
   }
 
-.menu-itemms{
+  .menu-itemms {
     font-family: "Outfit";
   }
 
-.username-tag{
+  .username-tag {
     font-size: 14px;
     padding: 10px;
     font-family: "Outfit";
+  }
+
+  .css-rizt0-MuiTypography-root{
+    font-family: "Outfit";
+  }
+
+  .css-i0oblb-MuiModal-root-MuiDrawer-root .MuiDrawer-paper{
+    color: $HoverGreen;
   }
 }

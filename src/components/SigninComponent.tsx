@@ -14,6 +14,15 @@ import type { User } from "../classes/CalendarClass";
 const SignIn: FC = () => {
   const loginUserMutation = useApiMutation(createRecords(loginuser), ["users"]);
   const { login } = useAuth();
+  const userdata: User = {
+    email: "",
+    firstname: "",
+    id: 0,
+    lastname: "",
+    phone: 0,
+    regDate: "",
+    userType: "",
+  };
 
   const navigate = useNavigate();
   const [form, setForm] = useState<FormState>({
@@ -48,27 +57,24 @@ const SignIn: FC = () => {
     loginUserMutation.mutate(requestobject, {
       onSuccess: (data: ResponseObj<any>) => {
         setLoading(false);
-        const userdata : User = {email: "", firstname: "", id:0, lastname: "", phone: 0, regDate:"", userType:""};
         if (data.success) {
-          data?.data.map((data : any)=>{
-             userdata.email = data.email;
-             userdata.firstname = data.first_name;
-             userdata.lastname = data.last_name;
-             userdata.id = data.id;
-             userdata.phone = data.phone;
-             userdata.regDate = data.reg_date;
-             userdata.userType = data.user_type;
-          });
-          console.log(userdata);
-          login({user: userdata}); 
+          userdata.email = data.data.email;
+          userdata.firstname = data.data.first_name;
+          userdata.lastname = data.data.last_name;
+          userdata.id = data.data.id;
+          userdata.phone = data.data.phone;
+          userdata.regDate = data.data.reg_date;
+          userdata.userType = data.data.user_type;
+          userdata.isAdmin = data.data.user_type === "user" ? false : true;
+          login({ user: userdata });
           navigate("/calendar");
         } else {
           setSigninPageErrors(data.error);
         }
       },
       onError: (data) => {
-         setLoading(false);
-         setSigninPageErrors(data.message);
+        setLoading(false);
+        setSigninPageErrors(data.message);
       },
     });
   };
@@ -183,24 +189,25 @@ const SignIn: FC = () => {
               </div>
             </div>
 
-<div className="common-error">
-            {SigninpageErrors && (
-              <span className="field-err">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg>
-                {SigninpageErrors}
-              </span>
-            )}</div>
+            <div className="common-error">
+              {SigninpageErrors && (
+                <span className="field-err">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  {SigninpageErrors}
+                </span>
+              )}
+            </div>
             <button type="submit" className="submit-btn" disabled={loading}>
               {loading ? (
                 <>

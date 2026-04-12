@@ -5,6 +5,7 @@ import MobiScrollCalendar from "./components/ResponsiveCalender";
 import SignIn from "./components/SigninComponent";
 import Register from "./components/RegisterComponent";
 import Home from "./components/HomeComponent";
+import ProtectedRoute from "./components/AuthManager/ProtectedRoute";
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
       <main className="main-container">
         <Routes>
           <Route path="/" element={<Home />}></Route>
-          <Route path="/calendar" element={<MobiScrollCalendar />}></Route>
+          <Route path="/calendar" element={ <ProtectedRoute><MobiScrollCalendar /></ProtectedRoute>}></Route>
           <Route path="/signin" element={<SignIn />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="*" element={<Navigate to="/" replace />} />

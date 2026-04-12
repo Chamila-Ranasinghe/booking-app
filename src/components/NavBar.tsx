@@ -17,15 +17,16 @@ import { NavLink } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import { useNavigate , useLocation } from "react-router-dom";
-import menuicon from "../assets/menu.svg"; 
+import { useNavigate, useLocation } from "react-router-dom";
+import menuicon from "../assets/menu.svg";
+import { useAuth } from "./AuthManager/AuthContext";
 
 interface Props {
   window?: () => Window;
 }
 
 const drawerWidth = 240;
-const navItems = [{ label: "Home", path: "calendar" }];
+const navItems = [{ label: "My Calendar", path: "calendar" }];
 const signInItems = [
   { label: "Register", path: "register" },
   { label: "Sign In", path: "signin" },
@@ -35,17 +36,15 @@ export default function NavBar(props: Props) {
   const navigate = useNavigate();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [auth] = useState(false);
-  const [isAdmin] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isHomePage, setHomepage] = useState(true);
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
-    if(location.pathname === "/"){
-       setHomepage(true);
-    }
-    else{
+    if (location.pathname === "/") {
+      setHomepage(true);
+    } else {
       setHomepage(false);
     }
   }, []);
@@ -62,12 +61,19 @@ export default function NavBar(props: Props) {
     setAnchorEl(null);
   };
 
+  const handleLogout = () => {
+    navigate("/signin");
+    handleClose();
+    logout();
+  };
+
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Typography className="comp-logo-mobile">SPORTS ZONE</Typography>
       <Divider />
       <List>
         {navItems.map((item) => (
+          user && 
           <ListItem key={item.label} disablePadding>
             <ListItemButton
               component={NavLink}
@@ -91,8 +97,6 @@ export default function NavBar(props: Props) {
       <CssBaseline />
       <AppBar component="nav" className="myAppBar">
         <Toolbar className="tool-bar">
-
-          
           <IconButton
             color="info"
             aria-label="open drawer"
@@ -101,7 +105,7 @@ export default function NavBar(props: Props) {
             className="iconbutton-mobile"
             sx={{ mr: 2, display: { sm: "none" } }}
           >
-          <img src={menuicon}></img>
+            <img src={menuicon}></img>
           </IconButton>
           <Typography
             variant="h6"
@@ -113,6 +117,7 @@ export default function NavBar(props: Props) {
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map((item) => (
+              user && 
               <NavLink
                 key={item.label}
                 to={`/${item.path.toLowerCase()}`} // adjust route if needed
@@ -130,95 +135,97 @@ export default function NavBar(props: Props) {
               </NavLink>
             ))}
           </Box>
-          {
-            isHomePage && (
-              <div className="navigator-class">
-                <button
-                  className="nav-cta"
-                  onClick={() => {navigate("/calendar"); setHomepage(false)}}
-                >
-                  Book Now
-                </button>
-              </div>
-            )
-          }
+          {isHomePage && (
+            <div className="navigator-class">
+              <button
+                className="nav-cta"
+                onClick={() => {
+                  navigate("/signin");
+                  setHomepage(false);
+                }}
+              >
+                Book Now
+              </button>
+            </div>
+          )}
 
-          {auth ? (
-            (
-              <div className="logged-profile">
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleMenu}
-                  color="inherit"
-                >
-                  <span className="username-tag">Hi, Ramesh</span>{" "}
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  className="avatar-menu-dropdown"
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                  PaperProps={{
-                    elevation: 4,
-                    sx: {
-                      overflow: "visible",
-                      mt: -1,
-                      minWidth: 180,
-                      "&::before": {
-                        content: '""',
-                        display: "block",
-                        position: "absolute",
-                        top: 0,
-                        right: 33,
-                        width: 10,
-                        height: 10,
-                        bgcolor: "background.paper",
-                        transform: "translateY(-50%) rotate(45deg)",
-                        zIndex: 0,
-                      },
+          {user ? (
+            <div className="logged-profile">
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <span className="username-tag">Hi, {user?.firstname}</span>{" "}
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                keepMounted
+                className="avatar-menu-dropdown"
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                PaperProps={{
+                  elevation: 4,
+                  sx: {
+                    overflow: "visible",
+                    mt: -1,
+                    minWidth: 180,
+                    "&::before": {
+                      content: '""',
+                      display: "block",
+                      position: "absolute",
+                      top: 0,
+                      right: 33,
+                      width: 10,
+                      height: 10,
+                      bgcolor: "background.paper",
+                      transform: "translateY(-50%) rotate(45deg)",
+                      zIndex: 0,
                     },
-                  }}
-                >
-                  {isAdmin && (
-                    <MenuItem className="menu-itemms">Dashboard</MenuItem>
-                  )}
-                  <MenuItem className="menu-itemms">Logout</MenuItem>
-                </Menu>
+                  },
+                }}
+              >
+                {user.isAdmin && (
+                  <MenuItem className="menu-itemms">Dashboard</MenuItem>
+                )}
+                <MenuItem className="menu-itemms" onClick={handleLogout}>
+                  Logout
+                </MenuItem>
+              </Menu>
+            </div>
+          ) : (
+            !isHomePage && (
+              <div className="signIn">
+                {signInItems.map((item) => (
+                  <NavLink
+                    key={item.label}
+                    to={`/${item.path}`}
+                    className="navlink"
+                  >
+                    {({ isActive }) => (
+                      <Button
+                        className={`menubutton ${isActive ? "active" : ""}`}
+                      >
+                        {item.label}
+                      </Button>
+                    )}
+                  </NavLink>
+                ))}
               </div>
             )
-          ) : (
-            !isHomePage &&
-            (<div className="signIn">
-              {signInItems.map((item) => (
-                <NavLink
-                  key={item.label}
-                  to={`/${item.path}`}
-                  className="navlink"
-                >
-                  {({ isActive }) => (
-                    <Button
-                      className={`menubutton ${isActive ? "active" : ""}`}
-                    >
-                      {item.label}
-                    </Button>
-                  )}
-                </NavLink>
-              ))}
-            </div>)
           )}
         </Toolbar>
       </AppBar>

@@ -9,12 +9,14 @@ type AuthContextType = {
   token?: string | null;
   login: (data: { user: User;}) => void;
   logout: () => void;
+  isAuthReady: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isAuthReady, setIsAuthReady] = useState(false);
 //   const [token, setToken] = useState<string | null>(null);
 
   //Load from localStorage on app start
@@ -26,6 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(JSON.parse(storedUser));
     //   setToken(storedToken);
     }
+    setIsAuthReady(true);
   }, []);
 
   // Login
@@ -47,7 +50,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, isAuthReady }}>
       {children}
     </AuthContext.Provider>
   );

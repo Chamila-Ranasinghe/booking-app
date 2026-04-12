@@ -72,4 +72,5 @@ export interface User {
   phone?: number;
   userType?: string;
   regDate?: string;
+  isAdmin?: boolean;
 }

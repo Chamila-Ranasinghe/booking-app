@@ -194,7 +194,7 @@ const Register: FC = () => {
     
     return(
 
-      verifyUseremail.isPending ? ( <div className=""><ThreeDots /></div>) : 
+      verifyUseremail.isPending ? ( <div><ThreeDots /></div>) : 
       (<>
       <div className="email-verify-container">
           <div className="email-card">
