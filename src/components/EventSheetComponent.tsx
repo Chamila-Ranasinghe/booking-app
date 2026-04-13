@@ -1,6 +1,6 @@
 import { useCallback, useState, useMemo, type FC } from "react";
 import { type EventSheetProps } from "../classes/CalendarClass";
-import { COLOR_PALETTE, timeSlots, type SlotData } from "../classes/CalendarData";
+import { COLOR_PALETTE, timeSlots } from "../classes/CalendarData";
 import { parseDateTime, toDateInput } from "../classes/CalendarFunctions";
 import { XIcon } from "../icons/CalenderIcons";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
