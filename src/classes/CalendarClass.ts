@@ -74,3 +74,4 @@ export interface User {
   regDate?: string;
   isAdmin?: boolean;
 }
+ 

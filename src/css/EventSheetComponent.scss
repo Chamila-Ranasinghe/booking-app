@@ -1,3 +1,5 @@
+@use "./colors.scss" as *;
+
 :root {
 
     .css-vycme6-MuiPickersInputBase-root-MuiPickersOutlinedInput-root {
@@ -17,11 +19,58 @@
         // font-weight: 500;
     }
 
-    .css-1jpopwz-MuiPickersSectionList-sectionContent-MuiPickersInputBase-sectionContent{
+    .css-1jpopwz-MuiPickersSectionList-sectionContent-MuiPickersInputBase-sectionContent {
         font-family: "Outfit";
     }
 
+    .total-price-display {
+        text-align: center;
 
+        .total-tag {
+            position: sticky;
+            bottom: 50px;
+            margin-left: auto;
+            background: $PrimaryBlack;
+            color: white;
+            padding: 6px 10px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            width: fit-content;
+            z-index: 10;
+        }
+
+    }
+
+    .status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 10px;
+        float: right;
+    }
+
+    .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        animation: pulse 1.5s infinite;
+    }
+
+    .available {
+        background-color: #4caf50;
+        /* green */
+    }
+
+    .booked {
+        background-color: #f44336;
+        /* red */
+    }
+
+    @keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
 
 
 }

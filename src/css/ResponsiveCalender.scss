@@ -839,7 +839,7 @@
 .sheet-footer {
   display: flex;
   gap: 10px;
-  padding: 12px 22px;
+  padding: 5px 22px;
   padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
   border-top: 1px solid var(--border);
   background: var(--surface);
@@ -976,6 +976,14 @@
 .slot-pill.slot-selected:hover {
   background: $HoverGreen;
   border-color: var(--terra-dark);
+}
+.slot-pill.booked{
+  border-color: $PrimaryBlack;
+  background-color: var(--danger);
+  color: #fff9f5;
+  box-shadow: 0 2px 10px rgba(196, 98, 45, 0.3);
+  cursor: not-allowed;
+  
 }
 .slot-summary {
   display: flex;

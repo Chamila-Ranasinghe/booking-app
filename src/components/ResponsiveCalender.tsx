@@ -95,12 +95,7 @@ const MobiScrollCalendar: FC = () => {
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth >= 768);
 
   const agendaRef = useRef<HTMLDivElement | null>(null);
-
-
-  // const todo = useApiQuery(["users"], getAllUsers);
-
-  // console.log(todo.data?.data)
-
+ 
   /* Track viewport */
   useEffect(() => {
     const handler = () => setIsDesktop(window.innerWidth >= 768);
