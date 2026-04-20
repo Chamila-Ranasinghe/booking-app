@@ -25,33 +25,33 @@ import { createBooking, editBookings, getBookings,  } from "../api/APIclass";
 import { useAuth } from "./AuthManager/AuthContext";
 
 const NOW = new Date();
-const CY = NOW.getFullYear();
-const CM = NOW.getMonth();
+// const CY = NOW.getFullYear();
+// const CM = NOW.getMonth();
 
 
-function mkEvent(
-  id: number,
-  title: string,
-  color: string,
-  allDay = false,
-  recurringEvent = false,
-  sport: number,
-  timeSlots: number[],
-  date : Date
-): CalendarEvent {
-  return {
-    id,
-    title,
-    color,
-    allDay,
-    start: new Date(date),
-    end: new Date(date),
-    recurringEvent,
-    sport,
-    timeSlots,
-    date,
-  };
-}
+// function mkEvent(
+//   id: number,
+//   title: string,
+//   color: string,
+//   allDay = false,
+//   recurringEvent = false,
+//   sport: number,
+//   timeSlots: number[],
+//   date : Date
+// ): CalendarEvent {
+//   return {
+//     id,
+//     title,
+//     color,
+//     allDay,
+//     start: new Date(date),
+//     end: new Date(date),
+//     recurringEvent,
+//     sport,
+//     timeSlots,
+//     date,
+//   };
+// }
 
 const INITIAL_EVENTS: CalendarEvent[] = [];
 

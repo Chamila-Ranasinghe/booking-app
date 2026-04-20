@@ -67,7 +67,7 @@ export default function NavBar(props: Props) {
 
   const handleLogout = () => {
     logoutSession.mutate({},{
-      onSuccess: (data: ResponseObj<any>) => {
+      onSuccess: () => {
           navigate("/signin");
           handleClose();
           logout();

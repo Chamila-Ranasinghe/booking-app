@@ -21,13 +21,17 @@ export const EventSheet: FC<EventSheetProps> = ({
   onDelete,
   onClose,
 }) => {
+
+  const [dateStr, setDateStr] = useState<string>(
+    toDateInput(event?.start ?? defaultDate),
+  );
   const isEdit = Boolean(event);
   const { user } = useAuth();
   const {data : sports, isLoading: isSportsLoading } = useApiQuery(["sports"],getRecords(getSports));
-  const {data : timeSlot, isLoading: isTimeSlotsLoading} = useApiQuery(["timeslots"],getRecords(getTimeSlots));
+  const {data : timeSlot, isLoading: isTimeSlotsLoading} = useApiQuery(["timeslots", dateStr],getRecords(getTimeSlots, {date: dateStr}));
   const ALL_SLOTS = timeSlot?.data;
 
-
+  
 const SLOT_PERIODS = [
   {
     label: "Morning",
@@ -56,7 +60,10 @@ const initialSlots = useMemo<number[]>(() => {
   return slots;
 }, [event]);
 
+const isPastEvent: boolean = event?.date && new Date(event.date) < new Date() || false;
+
 useEffect(() => {
+ 
   if (!user) return;
   if (user.isAdmin) {
     setTitle(""); // or keep existing if needed
@@ -75,9 +82,7 @@ useEffect(() => {
     event?.recurringEvent ?? false,
   );
   const [selectedsport, setSport] = useState<number>(event?.sport ?? 1);
-  const [dateStr, setDateStr] = useState<string>(
-    toDateInput(event?.start ?? defaultDate),
-  );
+  
 
   const [selSlots, setSelSlots] = useState<number[]>(initialSlots);
   const toggleSlot = useCallback((hour: number, isbooked: boolean = false) => {
@@ -92,7 +97,7 @@ useEffect(() => {
 
   const handleSave = useCallback(() => {
     if (!title.trim()) return;
-    let start: Date, end: Date, date: Date, sportCharge: number;
+    let start: Date, end: Date, sportCharge: number;
     sportCharge = sports?.data.find((sp : SportInterface)=> sp.id == selectedsport)?.rate || 0;
     if (allDay || selSlots.length === 0) {
       start = parseDateTime(dateStr, "00:00");
@@ -103,7 +108,6 @@ useEffect(() => {
       const eh = sorted[sorted.length - 1] + 1;
       start = parseDateTime(dateStr, `${String(sh).padStart(2, "0")}:00`);
       end = parseDateTime(dateStr, `${String(eh).padStart(2, "0")}:00`);
-      date = parseDateTime(dateStr, `${String(eh).padStart(2, "0")}:00`);
     }
     onSave({
       id: event?.id,
@@ -327,7 +331,8 @@ useEffect(() => {
             .00
           </span>
         </div>
-        <div className="sheet-footer">
+        { !isPastEvent &&
+        <div className="sheet-footer" >
           {isEdit && event && (
             <button
               className="btn btn-danger"
@@ -339,7 +344,7 @@ useEffect(() => {
           <button className="btn btn-primary" onClick={handleSave}>
             {isEdit ? "Save Changes" : "Book"}
           </button>
-        </div>
+        </div>}
       </div>
     </div>)
   );

@@ -31,9 +31,9 @@ export const DetailSheet: FC<DetailSheetProps> = ({
     });
   }
 
-  const timeStr = event.allDay
-    ? "All day"
-    : `${formatTime(event.start)} – ${formatTime(event.end)}`;
+  // const timeStr = event.allDay
+  //   ? "All day"
+  //   : `${formatTime(event.start)} – ${formatTime(event.end)}`;
 
   return (
     <div

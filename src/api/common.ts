@@ -14,9 +14,9 @@ export interface ResponseObj<T> {
 
 
 // GET
-export const getRecords = (url: string) => {
+export const getRecords = (url: string, params: any = null) => {
   return async () => {
-    const res = await api.get(url);
+    const res = await api.get(url, {params:params });
     return res.data;
   };
 };

@@ -11,7 +11,7 @@ export const EventCard: FC<EventCardProps> = ({ event, onPress }) => {
   const timeRange: string[] = [];
   const { data: timeSlot, isLoading } = useApiQuery(
     ["timeslots"],
-    getRecords(getTimeSlots),
+    getRecords(getTimeSlots, {date: new Date().toISOString().split("T")[0]}),
   );
 
   if (timeSlot?.data) {
@@ -25,9 +25,9 @@ export const EventCard: FC<EventCardProps> = ({ event, onPress }) => {
     });
   }
 
-  const timeStr = event.allDay
-    ? "All day"
-    : `${formatTime(event.start)} – ${formatTime(event.end)}`;
+  // const timeStr = event.allDay
+  //   ? "All day"
+  //   : `${formatTime(event.start)} – ${formatTime(event.end)}`;
   return (
     isLoading? <> <Facebook /> </> : 
     <div className="event-card" onClick={() => onPress(event)}>

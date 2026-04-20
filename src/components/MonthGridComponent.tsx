@@ -4,7 +4,6 @@ import { DAY_SHORT, DAY_MED } from "../classes/CalendarData";
 import {
   sameDay,
   startOf,
-  formatTime,
   getCalendarCells,
 } from "../classes/CalendarFunctions";
 
