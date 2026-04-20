@@ -67,10 +67,122 @@
     }
 
     @keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
-}
+        0% {
+            opacity: 1;
+        }
 
+        50% {
+            opacity: 0.5;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .ss-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .ss-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 18px 8px;
+        border-radius: 12px;
+        background: #25252e;
+        border: 1.5px solid #33333d;
+        cursor: pointer;
+        transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+        outline: none;
+        width: 100%;
+        box-sizing: border-box;
+        min-height: 88px;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .ss-card:hover {
+        background: #2e2e3a;
+        border-color: #4a4a5a;
+        transform: translateY(-2px);
+    }
+
+    .ss-card:active {
+        transform: scale(0.96);
+    }
+
+    .ss-card.ss-active {
+        background: #f5c518;
+        border-color: #f5c518;
+    }
+
+    .ss-card.ss-active:hover {
+        background: #f7ce3a;
+        border-color: #f7ce3a;
+        transform: translateY(-2px);
+    }
+
+    .ss-icon {
+        font-size: 26px;
+        line-height: 1;
+        display: block;
+        pointer-events: none;
+
+        img {
+            height: auto;
+            width: 35px;
+        }
+    }
+
+    .ss-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #9a9aaa;
+        text-align: center;
+        line-height: 1.3;
+        pointer-events: none;
+    }
+
+    .ss-card.ss-active .ss-label {
+        color: #1a1205;
+    }
+
+    @media (max-width: 480px) {
+        .ss-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .ss-card {
+            padding: 16px 8px;
+            min-height: 80px;
+        }
+    }
+
+    @media (max-width: 320px) {
+        .ss-icon {
+            font-size: 22px;
+        }
+
+        .ss-label {
+            font-size: 9px;
+        }
+
+        .ss-card {
+            padding: 12px 6px;
+            min-height: 70px;
+            gap: 6px;
+        }
+    }
+    
+    .disabled-field{
+        background-color: $lightGrey;
+    }
 
 }

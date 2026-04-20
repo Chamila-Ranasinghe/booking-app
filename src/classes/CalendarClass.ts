@@ -6,8 +6,14 @@ export interface CalendarEvent {
   color: string;
   allDay: boolean;
   recurringEvent: boolean;
-  sport?: string;
+  sport?: number;
   timeSlots?: number[];
+  date: Date;
+  fullName?: string;
+  phone?: string;
+  sportName?:string;
+  bookingPrice?: number;
+  status?:number;
 }
 
 export interface DayCell {
@@ -73,5 +79,19 @@ export interface User {
   userType?: string;
   regDate?: string;
   isAdmin?: boolean;
+  sessiontoken: string;
 }
+
+export const BookingStatus = {
+  PENDING: 1,
+  CONFIRMED: 2,
+  DELETED:3
+} as const;
+
+export const StaleTime = {
+  FIVEMINUTES:1000 * 60 * 50,
+  TENMINUTES: 1000 * 60 * 10,
+  TWENTYMINUTES: 1000 * 60 * 20,
+  THIRTYMINUTES: 1000 * 60 * 30
+} as const;
  

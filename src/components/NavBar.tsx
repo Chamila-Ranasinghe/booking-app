@@ -20,6 +20,8 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { useNavigate, useLocation } from "react-router-dom";
 import menuicon from "../assets/menu.svg";
 import { useAuth } from "./AuthManager/AuthContext";
+import { getRecords, useApiMutation, type ResponseObj } from "../api/common";
+import { logoutuser } from "../api/APIclass";
 
 interface Props {
   window?: () => Window;
@@ -40,6 +42,8 @@ export default function NavBar(props: Props) {
   const [isHomePage, setHomepage] = useState(true);
   const location = useLocation();
   const { user, logout } = useAuth();
+
+  const logoutSession = useApiMutation(getRecords(logoutuser),["userlogout"]);
 
   useEffect(() => {
     if (location.pathname === "/") {
@@ -62,9 +66,14 @@ export default function NavBar(props: Props) {
   };
 
   const handleLogout = () => {
-    navigate("/signin");
-    handleClose();
-    logout();
+    logoutSession.mutate({},{
+      onSuccess: (data: ResponseObj<any>) => {
+          navigate("/signin");
+          handleClose();
+          logout();
+      }
+    })
+    
   };
 
   const drawer = (

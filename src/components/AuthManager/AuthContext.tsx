@@ -7,7 +7,7 @@ import type { User } from "../../classes/CalendarClass";
 type AuthContextType = {
   user: User | null;
   token?: string | null;
-  login: (data: { user: User;}) => void;
+  login: (data: { user: User; token: string}) => void;
   logout: () => void;
   isAuthReady: boolean;
 };
@@ -17,36 +17,36 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
-//   const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   //Load from localStorage on app start
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    // const storedToken = localStorage.getItem("token");
+    const storedToken = localStorage.getItem("token");
 
-    if (storedUser) {
+    if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
-    //   setToken(storedToken);
+      setToken(storedToken);
     }
     setIsAuthReady(true);
   }, []);
 
   // Login
-  const login = ({ user }: { user: User; }) => {
+  const login = ({ user, token }: { user: User; token: string }) => {
     setUser(user);
-    // setToken(token);
+    setToken(token);
 
     localStorage.setItem("user", JSON.stringify(user));
-    // localStorage.setItem("token", token);
+    localStorage.setItem("token", token);
   };
 
   // Logout
   const logout = () => {
     setUser(null);
-    // setToken(null);
+    setToken(null);
 
     localStorage.removeItem("user");
-    // localStorage.removeItem("token");
+    localStorage.removeItem("token");
   };
 
   return (

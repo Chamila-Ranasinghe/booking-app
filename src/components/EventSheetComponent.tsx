@@ -1,6 +1,6 @@
-import { useCallback, useState, useMemo, type FC } from "react";
+import { useCallback, useState, useMemo, type FC, useEffect } from "react";
 import { type EventSheetProps } from "../classes/CalendarClass";
-import { COLOR_PALETTE, timeSlots } from "../classes/CalendarData";
+import { COLOR_PALETTE, type SportInterface} from "../classes/CalendarData";
 import { parseDateTime, toDateInput } from "../classes/CalendarFunctions";
 import { XIcon } from "../icons/CalenderIcons";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -8,45 +8,10 @@ import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "../css/EventSheetComponent.scss";
-
-/* All 1-hour slots from 6 AM to 10 PM */
-// const ALL_SLOTS: { hour: number; label: string }[] = Array.from(
-//   { length: 17 },
-//   (_, i) => {
-//     const h = i + 6;
-//     const fmt = (n: number) => {
-//       if (n === 12) return "12 PM";
-//       return n < 12 ? `${n} AM` : `${n - 12} PM`;
-//     };
-//     return { hour: h, label: `${fmt(h)} – ${fmt(h + 1)}` };
-//   },
-// );
-
-const ALL_SLOTS = timeSlots;
-
-const SLOT_PERIODS = [
-  {
-    label: "Morning",
-    slots: ALL_SLOTS.filter((s) => s.timePeriod == 1),
-  },
-  {
-    label: "Afternoon",
-    slots: ALL_SLOTS.filter((s) => s.timePeriod == 2),
-  },
-  {
-    label: "Evening",
-    slots: ALL_SLOTS.filter((s) => s.timePeriod == 3),
-  },
-];
-
-function formatSlotLabel(id: number): string {
-  // const fmt = (n: number) => {
-  //   if (n === 12) return "12 PM";
-  //   return n < 12 ? `${n} AM` : `${n - 12} PM`;
-  // };
-  // return `${fmt(hour)} – ${fmt(hour + 1)}`;
-  return ALL_SLOTS.find(u => u.id == id)?.label || "";
-}
+import { getRecords, useApiQuery } from "../api/common";
+import { getSports, getTimeSlots } from "../api/APIclass";
+import { useAuth } from "./AuthManager/AuthContext";
+import ThreeDots from "./ThreeDots";
 
 export const EventSheet: FC<EventSheetProps> = ({
   event,
@@ -57,33 +22,64 @@ export const EventSheet: FC<EventSheetProps> = ({
   onClose,
 }) => {
   const isEdit = Boolean(event);
+  const { user } = useAuth();
+  const {data : sports, isLoading: isSportsLoading } = useApiQuery(["sports"],getRecords(getSports));
+  const {data : timeSlot, isLoading: isTimeSlotsLoading} = useApiQuery(["timeslots"],getRecords(getTimeSlots));
+  const ALL_SLOTS = timeSlot?.data;
 
-  // Derive initial slots from existing event start/end hours
-  // used for the editing event, which already have slots booked --> need to change  
-  const initialSlots = useMemo<number[]>(() => {
-    if (!event || event.allDay) return [];
-    const sh = event.start.getHours();
-    const eh = event.end.getHours();
-    const slots: number[] = [];
-    for (let h = sh; h < eh; h++) slots.push(h);
-    return slots.filter((h) => h >= 6 && h <= 22);
-  }, [event]);
 
+const SLOT_PERIODS = [
+  {
+    label: "Morning",
+    slots: ALL_SLOTS?.filter((s: any) => s.timePeriod == 1),
+  },
+  {
+    label: "Afternoon",
+    slots: ALL_SLOTS?.filter((s: any) => s.timePeriod == 2),
+  },
+  {
+    label: "Evening",
+    slots: ALL_SLOTS?.filter((s: any) => s.timePeriod == 3),
+  },
+];
+
+function formatSlotLabel(id: number): string {
+  return ALL_SLOTS?.find((u: any) => u.id == id)?.timeSlotName || "";
+}
+
+const initialSlots = useMemo<number[]>(() => {
+  if (!event || event.allDay) return [];
+  const slots: number[] = [];
+  event.timeSlots?.map((time: number) => {
+    slots.push(Number(time));
+  });
+  return slots;
+}, [event]);
+
+useEffect(() => {
+  if (!user) return;
+  if (user.isAdmin) {
+    setTitle(""); // or keep existing if needed
+  } else {
+    setTitle(`${user.firstname} ${user.lastname} - ${user.phone}`);
+  }
+}, [user]);
+
+  
+  // const [title, setTitle] = useState<string>(user?.isAdmin ? `${user?.firstname}` : `${user?.firstname} ${user?.lastname} - ${user?.phone}`);
+  // const titletag = user?.isAdmin ? title : `${user?.firstname} ${user?.lastname} - ${user?.phone}`
   const [title, setTitle] = useState<string>(event?.title ?? "");
   const [color, setColor] = useState<string>(event?.color ?? COLOR_PALETTE[0]);
   const [allDay, setAllDay] = useState<boolean>(event?.allDay ?? false);
   const [recurringEvent, setRecurring] = useState<boolean>(
     event?.recurringEvent ?? false,
   );
-  const [sport, setSport] = useState<string>(event?.sport ?? "");
+  const [selectedsport, setSport] = useState<number>(event?.sport ?? 1);
   const [dateStr, setDateStr] = useState<string>(
     toDateInput(event?.start ?? defaultDate),
   );
 
-  // const [startT, setStartT] = useState<string>(toTimeInput(event?.start ?? new Date()),);
-  // const [endT, setEndT] = useState<string>(toTimeInput(event?.end ?? new Date()),);
   const [selSlots, setSelSlots] = useState<number[]>(initialSlots);
-
   const toggleSlot = useCallback((hour: number, isbooked: boolean = false) => {
     if(isbooked) return;
     setSelSlots((prev) =>
@@ -93,9 +89,11 @@ export const EventSheet: FC<EventSheetProps> = ({
 
   const clearSlots = useCallback(() => setSelSlots([]), []);
 
+
   const handleSave = useCallback(() => {
     if (!title.trim()) return;
-    let start: Date, end: Date;
+    let start: Date, end: Date, date: Date, sportCharge: number;
+    sportCharge = sports?.data.find((sp : SportInterface)=> sp.id == selectedsport)?.rate || 0;
     if (allDay || selSlots.length === 0) {
       start = parseDateTime(dateStr, "00:00");
       end = parseDateTime(dateStr, "23:59");
@@ -105,6 +103,7 @@ export const EventSheet: FC<EventSheetProps> = ({
       const eh = sorted[sorted.length - 1] + 1;
       start = parseDateTime(dateStr, `${String(sh).padStart(2, "0")}:00`);
       end = parseDateTime(dateStr, `${String(eh).padStart(2, "0")}:00`);
+      date = parseDateTime(dateStr, `${String(eh).padStart(2, "0")}:00`);
     }
     onSave({
       id: event?.id,
@@ -114,10 +113,12 @@ export const EventSheet: FC<EventSheetProps> = ({
       color,
       allDay: allDay || selSlots.length === 0,
       recurringEvent,
-      sport: sport || undefined,
+      sport: selectedsport || undefined,
       timeSlots: selSlots.length
         ? [...selSlots].sort((a, b) => a - b)
         : undefined,
+      date: parseDateTime(dateStr, `${String(selSlots[selSlots.length - 1] + 1).padStart(2, "0")}:00`),  
+      bookingPrice: selSlots.length * sportCharge
     });
   }, [
     title,
@@ -125,10 +126,10 @@ export const EventSheet: FC<EventSheetProps> = ({
     dateStr,
     selSlots,
     color,
-    sport,
+    selectedsport,
     recurringEvent,
     event,
-    onSave,
+    onSave
   ]);
 
   /* Sorted selected slots for display */
@@ -136,17 +137,12 @@ export const EventSheet: FC<EventSheetProps> = ({
     () => [...selSlots].sort((a, b) => a - b),
     [selSlots],
   );
-  const SPORT_LIST: string[] = ["Football", "Cricket", "Yoga", "Zumba"];
 
-  // ⚠️ NOTE: Do NOT define a Wrapper component here — components defined inside
-  // render functions get a new identity on every re-render, causing React to
-  // unmount + remount the entire subtree on every keystroke, retriggering the
-  // CSS animation. Inline the overlay JSX directly instead.
   return (
-    <div
+    (isSportsLoading || isTimeSlotsLoading) ? ( <div><ThreeDots /></div>) : 
+    (<div
       className={`overlay ${isDesktop ? "modal-mode" : ""}`}
-      onClick={(e) => e.target === e.currentTarget && onClose()}
-    >
+      onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className={isDesktop ? "modal" : "sheet"}>
         {!isDesktop && <div className="sheet-handle" />}
 
@@ -161,44 +157,32 @@ export const EventSheet: FC<EventSheetProps> = ({
 
         <div className="sheet-body">
           <div>
-            <div className="field-label">Title</div>
+            <div className="field-label">Booking Name</div>
             <input
-              className="cal-input"
+              className="cal-input disabled-field"
               placeholder="Event title…"
               value={title}
+              disabled={!user?.isAdmin}
               onChange={(e) => setTitle(e.target.value)}
-              autoFocus
             />
           </div>
 
           <div>
             <div className="field-label">Sport</div>
             <div className="select-wrap">
-              <select
-                className="cal-input"
-                value={sport}
-                onChange={(e) => setSport(e.target.value)}
-              >
-                <option value="">— Select sport —</option>
-                {SPORT_LIST.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
+              <div className="ss-grid">
+                {sports?.data.map((sport:SportInterface) => (
+                  <button
+                    key={sport.id}
+                    onClick={() => setSport(sport.id)}
+                    className={`ss-card${selectedsport === sport.id ? " ss-active" : ""}`}
+                    aria-pressed={selectedsport === sport.id}
+                    aria-label={sport.sportname}
+                  >
+                    <span className="ss-icon"><img src={sport.icon}></img></span>
+                    <span className="ss-label">{sport.sportname}</span>
+                  </button>
                 ))}
-              </select>
-              <div className="select-arrow">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
               </div>
             </div>
           </div>
@@ -207,6 +191,7 @@ export const EventSheet: FC<EventSheetProps> = ({
             <div className="field-label">Date</div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
+                autoFocus
                 className="cal-input"
                 disablePast
                 defaultValue={dayjs(dateStr)}
@@ -215,13 +200,6 @@ export const EventSheet: FC<EventSheetProps> = ({
                 }
               />
             </LocalizationProvider>
-            {/* <input
-              type="date"
-              className="cal-input"
-              value={dateStr}
-              min={new Date().toISOString().split("T")[0]}
-              onChange={(e) => setDateStr(e.target.value)}
-            /> */}
           </div>
 
           <div className="toggle-row">
@@ -256,11 +234,10 @@ export const EventSheet: FC<EventSheetProps> = ({
                 >
                   — pick one or more 1-hr blocks
                 </span>
-                 <div className="status">
+                <div className="status">
                   <span className="dot available"></span> Available
                   <span className="dot booked"></span> Booked
                 </div>
-
               </div>
 
               {/* Selected summary bar */}
@@ -306,19 +283,21 @@ export const EventSheet: FC<EventSheetProps> = ({
               </div>
 
               {/* Slot grid grouped by period */}
-              {SLOT_PERIODS.map((period) => (
+              {SLOT_PERIODS?.map((period) => (
                 <div key={period.label}>
                   <div className="slot-period-label">{period.label}</div>
                   <div className="slot-grid">
-                    {period.slots.map(({ id, label, isbooked }) => (
-                      <div
-                        key={id}
-                        className={`slot-pill ${selSlots.includes(id) ? "slot-selected" : isbooked ? "booked" : ""}`}
-                        onClick={() => toggleSlot(id, isbooked)}
-                      >
-                        {label}
-                      </div>
-                    ))}
+                    {period?.slots?.map(
+                      ({ id, timeSlotName, isbooked }: any) => (
+                        <div
+                          key={id}
+                          className={`slot-pill ${selSlots.includes(id) ? "slot-selected" : isbooked ? "booked" : ""}`}
+                          onClick={() => toggleSlot(id, isbooked)}
+                        >
+                          {timeSlotName}
+                        </div>
+                      ),
+                    )}
                   </div>
                 </div>
               ))}
@@ -341,7 +320,11 @@ export const EventSheet: FC<EventSheetProps> = ({
         </div>
         <div className="total-price-display">
           <span className="total-tag">
-            {selSlots.length} slots / Total: LKR {selSlots.length * 2500.0}.00
+            {selSlots.length} slots / Total: Rs:{" "}
+            {selSlots.length *
+              (sports?.data.find((v: SportInterface) => v.id == selectedsport)?.rate ||
+                0)}
+            .00
           </span>
         </div>
         <div className="sheet-footer">
@@ -358,6 +341,6 @@ export const EventSheet: FC<EventSheetProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>)
   );
 };

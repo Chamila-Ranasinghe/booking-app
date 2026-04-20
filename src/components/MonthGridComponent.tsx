@@ -118,7 +118,7 @@ export const MonthGrid: FC<MonthGridProps> = ({
                       title={
                         ev.allDay
                           ? ev.title
-                          : `${ev.title} · ${formatTime(ev.start)}`
+                          : `${ev.title}`
                       }
                       style={{ background: ev.color + "20", color: ev.color }}
                       onClick={(e) => {
@@ -134,9 +134,9 @@ export const MonthGrid: FC<MonthGridProps> = ({
                             fontWeight: 400,
                           }}
                         >
-                          {formatTime(ev.start)
+                          {/* {formatTime(ev.start)
                             .replace(" AM", "a")
-                            .replace(" PM", "p")}
+                            .replace(" PM", "p")} */}
                         </span>
                       )}
                       {ev.title}

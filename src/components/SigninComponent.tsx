@@ -22,6 +22,7 @@ const SignIn: FC = () => {
     phone: 0,
     regDate: "",
     userType: "",
+    sessiontoken: ""
   };
 
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ const SignIn: FC = () => {
           userdata.regDate = data.data.reg_date;
           userdata.userType = data.data.user_type;
           userdata.isAdmin = data.data.user_type === "user" ? false : true;
-          login({ user: userdata });
+          login({ user: userdata, token: data.data.sessiontoken});
           navigate("/calendar");
         } else {
           setSigninPageErrors(data.error);

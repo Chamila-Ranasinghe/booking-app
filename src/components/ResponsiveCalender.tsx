@@ -6,7 +6,7 @@ import {
   useRef,
   type FC,
 } from "react";
-import type { CalendarEvent, SheetState } from "../classes/CalendarClass";
+import { BookingStatus, type CalendarEvent, type SheetState } from "../classes/CalendarClass";
 import { MONTH_NAMES } from "../classes/CalendarData";
 import { sameDay, startOf } from "../classes/CalendarFunctions";
 import "../css/ResponsiveCalender.scss";
@@ -20,67 +20,40 @@ import { MonthGrid } from "../components/MonthGridComponent";
 import { DetailSheet } from "../components/EventDetailComponent";
 import { AgendaPanel } from "../components/AgendaPanelComponent";
 import { EventSheet } from "../components/EventSheetComponent";
+import { createRecords, getRecords, useApiMutation, useApiQuery, type ResponseObj } from "../api/common";
+import { createBooking, editBookings, getBookings,  } from "../api/APIclass";
+import { useAuth } from "./AuthManager/AuthContext";
 
 const NOW = new Date();
 const CY = NOW.getFullYear();
 const CM = NOW.getMonth();
 
-let _uid = 1;
+
 function mkEvent(
+  id: number,
   title: string,
-  mo: number,
-  d: number,
-  sh: number,
-  sm: number,
-  eh: number,
-  em: number,
   color: string,
   allDay = false,
   recurringEvent = false,
-  sport: string,
+  sport: number,
+  timeSlots: number[],
+  date : Date
 ): CalendarEvent {
   return {
-    id: _uid++,
+    id,
     title,
     color,
     allDay,
-    start: new Date(CY, mo, d, sh, sm),
-    end: new Date(CY, mo, d, eh, em),
+    start: new Date(date),
+    end: new Date(date),
     recurringEvent,
     sport,
+    timeSlots,
+    date,
   };
 }
 
-const INITIAL_EVENTS: CalendarEvent[] = [
-  mkEvent("Team Standup", CM, 1, 9, 0, 9, 30, "#3b82f6", false, false, ""),
-  mkEvent("Design Review", CM, 3, 14, 0, 15, 30, "#8b5cf6", false, false, ""),
-  mkEvent(
-    "1-on-1",
-    CM,
-    NOW.getDate(),
-    10,
-    0,
-    10,
-    30,
-    "#3b82f6",
-    false,
-    false,
-    "",
-  ),
-  mkEvent(
-    "Morning Run",
-    CM,
-    NOW.getDate(),
-    7,
-    0,
-    8,
-    0,
-    "#10b981",
-    false,
-    false,
-    "",
-  ),
-];
+const INITIAL_EVENTS: CalendarEvent[] = [];
 
 /* ══════════════════════════════════════════════════════════════
    12. ROOT APP COMPONENT
@@ -95,13 +68,39 @@ const MobiScrollCalendar: FC = () => {
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth >= 768);
 
   const agendaRef = useRef<HTMLDivElement | null>(null);
- 
-  /* Track viewport */
+
+  const { user } = useAuth();
+  const saveEvent = useApiMutation(createRecords(createBooking), ["create_booking"]);
+  const editEvent = useApiMutation(createRecords(editBookings),["edit_booking"]);
+  const {data: bookingData, refetch: refetchBookings } = 
+  useApiQuery(["allbookings"], getRecords(getBookings));
+
   useEffect(() => {
+    if (bookingData?.data) {
+      const mappedEvents = bookingData.data.map((item: any) => ({
+        id: item.BookingId.toString(),
+        title: item.sportname,
+        date: item.booking_date,
+        start: new Date(item.booking_date),
+        end: new Date(item.booking_date),
+        color: item.colors,
+        allDay: item.is_all_day,
+        recurringEvent: item.is_recurr_event,
+        sport: item.sport_id,
+        timeSlots: item.timeslots,
+        fullName : item.full_name,
+        phone: item.phone,
+        sportName: item.sport_name,
+        bookingPrice: item.booking_price,
+        status:item.status
+      }));
+      setEvents(mappedEvents);
+    }
+
     const handler = () => setIsDesktop(window.innerWidth >= 768);
     window.addEventListener("resize", handler);
     return () => window.removeEventListener("resize", handler);
-  }, []);
+  }, [bookingData?.data]);
 
   /* Month navigation */
   const goMonth = useCallback(
@@ -149,14 +148,42 @@ const MobiScrollCalendar: FC = () => {
   /* CRUD */
   const handleSave = useCallback(
     (data: Omit<CalendarEvent, "id"> & { id?: number }) => {
-      setEvents((prev) =>
-        data.id
-          ? prev.map((e) =>
-              e.id === data.id ? ({ ...e, ...data } as CalendarEvent) : e,
-            )
-          : [...prev, { ...data, id: Date.now() } as CalendarEvent],
-      );
-      setSheet(null);
+      let requestObj = {
+          id: data.id,
+          title: data.title,
+          sport_id: data.sport,
+          client_id: user?.id,
+          booking_date: data.date,
+          is_recurr_event: data.recurringEvent,
+          is_all_day: data.allDay,
+          status: BookingStatus.PENDING,
+          timeSlots: data.timeSlots,
+          color: data.color,
+          booking_price:data.bookingPrice
+        };
+      if (!data.id) {
+        /// saving a new event
+        saveEvent.mutate(requestObj, {
+          onSuccess: (response: ResponseObj<any>) => {
+            if (response.success) {
+              refetchBookings();
+              setSheet(null);
+            }
+          },
+        });
+      } else {
+        ///updating a new event
+        if (data.id) {
+          editEvent.mutate(requestObj, {
+            onSuccess: (response: ResponseObj<any>) => {
+              if (response.success) {
+                refetchBookings();
+                setSheet(null);
+              }
+            },
+          });
+        }
+      }
     },
     [],
   );

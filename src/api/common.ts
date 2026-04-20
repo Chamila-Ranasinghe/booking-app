@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { StaleTime } from "../classes/CalendarClass";
+import api from "./axios";
 
 
 export interface ResponseObj<T> {
@@ -12,15 +14,17 @@ export interface ResponseObj<T> {
 
 
 // GET
-export const getRecords  = async () => {
-  const res = await axios.get("/users");
-  return res.data;
+export const getRecords = (url: string) => {
+  return async () => {
+    const res = await api.get(url);
+    return res.data;
+  };
 };
 
 // POST
 export const createRecords = (url: string) => {
   return async (data: any) => {
-    const res = await axios.post(url, data);
+    const res = await api.post(url, data);
     return res.data;
   };
 };
@@ -38,17 +42,14 @@ export const deleteRecords = async (id: string) => {
 
 
 
-export function useApiQuery<T>(queryKey: string[], queryFn: () => Promise<T>) {
-  const { data, error, isLoading } = useQuery({
+export function useApiQuery<T>(queryKey: string[], queryFn: () => Promise<T>, staleTime: number = StaleTime.TENMINUTES) {
+  return useQuery({
     queryKey,
     queryFn,
+    staleTime: staleTime,
+    
+    // refetchOnWindowFocus: false
   });
-
-  return {
-    data,
-    error: error as Error | null,
-    isLoading,
-  };
 }
 
 export const useApiMutation = (
