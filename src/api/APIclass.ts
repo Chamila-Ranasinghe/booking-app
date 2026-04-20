@@ -1,5 +1,5 @@
-// const baseUrl = "https://play.codebytes.co/api/";
-export const baseUrl = "http://localhost/booking-app-backend/"
+export const baseUrl = "https://play.codebytes.co/api/";
+// export const baseUrl = "http://localhost/booking-app-backend/"
 
 
 

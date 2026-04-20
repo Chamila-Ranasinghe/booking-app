@@ -20,7 +20,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { useNavigate, useLocation } from "react-router-dom";
 import menuicon from "../assets/menu.svg";
 import { useAuth } from "./AuthManager/AuthContext";
-import { getRecords, useApiMutation, type ResponseObj } from "../api/common";
+import { getRecords, useApiMutation} from "../api/common";
 import { logoutuser } from "../api/APIclass";
 
 interface Props {

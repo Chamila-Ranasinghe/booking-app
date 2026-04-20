@@ -1,6 +1,5 @@
 import { type FC } from "react";
 import { type DetailSheetProps } from "../classes/CalendarClass";
-import { formatTime } from "../classes/CalendarFunctions";
 import { XIcon } from "../icons/CalenderIcons";
 import "../css/EventDetailComponent.scss";
 import { useAuth } from "./AuthManager/AuthContext";

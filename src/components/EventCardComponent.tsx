@@ -1,6 +1,5 @@
 import { type FC } from "react";
 import { BookingStatus, type EventCardProps } from "../classes/CalendarClass";
-import { formatTime } from "../classes/CalendarFunctions";
 import { EventCardChevronRightIcon } from "../icons/CalenderIcons";
 import "../css/EventCardComponent.scss";
 import { getRecords, useApiQuery } from "../api/common";
