@@ -62,7 +62,7 @@ const initialSlots = useMemo<number[]>(() => {
   return slots;
 }, [event]);
 
-const isPastEvent: boolean = event?.date && new Date(event.date) < new Date() || false;
+const isPastEvent: boolean = event?.date && new Date(event.date).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0) || false;
 
 useEffect(() => {
  

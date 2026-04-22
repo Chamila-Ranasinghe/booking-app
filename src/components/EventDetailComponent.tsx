@@ -18,6 +18,7 @@ export const DetailSheet: FC<DetailSheetProps> = ({
     ["timeslots"],
     getRecords(getTimeSlots),
   );
+  const isPastEvent: boolean = event?.date && new Date(event.date).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0) || false;
   const timeRange: string[] = [];
   if (timeSlot?.data) {
     event.timeSlots?.forEach((time) => {
@@ -56,7 +57,7 @@ export const DetailSheet: FC<DetailSheetProps> = ({
         <div className="detail-title">{event.title}</div>
         <div className="detail-time"> {timeRange[timeRange.length - 1]} <span style={{ color: event.color }}> / </span> {timeRange[0]}</div>
         <div className="sheet-footer">
-          <button
+          {!isPastEvent &&<button
             className="btn btn-danger"
             onClick={() => {
               onDelete(event.id);
@@ -64,9 +65,9 @@ export const DetailSheet: FC<DetailSheetProps> = ({
             }}
           >
             Delete
-          </button>
+          </button>}
           <button className="btn btn-primary" onClick={() => onEdit(event)}>
-            Edit
+            {isPastEvent? "View":  "Edit"}
           </button>
           { user?.isAdmin && <button className="btn btn-secondary" onClick={() => onEdit(event)}>
             Confirm

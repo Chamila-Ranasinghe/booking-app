@@ -268,12 +268,11 @@ const MobiScrollCalendar: FC = () => {
           )}
 
           {/* Today button — only when not on current month */}
-          {!isCurrentMonth && (
+          
             <button className="today-pill" onClick={goToday}>
               Today
             </button>
-          )}
-
+            
           {/* Add event — pill on desktop, circle on mobile */}
           {/* <button
             className="btn-add-desktop"
