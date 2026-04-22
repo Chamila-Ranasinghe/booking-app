@@ -12,6 +12,8 @@ import { getRecords, useApiQuery } from "../api/common";
 import { getSports, getTimeSlots } from "../api/APIclass";
 import { useAuth } from "./AuthManager/AuthContext";
 import ThreeDots from "./ThreeDots";
+import type { EventSheetErrors } from "../classes/RegisterClass";
+import { AlertIcon } from "../icons/RegisterIcons";
 
 export const EventSheet: FC<EventSheetProps> = ({
   event,
@@ -72,6 +74,7 @@ useEffect(() => {
   }
 }, [user]);
 
+  const [errors,   setErrors]   = useState<EventSheetErrors>({});
   const [title, setTitle] = useState<string>(event?.title ?? "");
   const [color, setColor] = useState<string>(event?.color ?? COLOR_PALETTE[0]);
   const [allDay, setAllDay] = useState<boolean>(event?.allDay ?? false);
@@ -88,10 +91,23 @@ useEffect(() => {
   }, []);
 
   const clearSlots = useCallback(() => setSelSlots([]), []);
+ 
+  
+
+  const validate = (): boolean => {
+      const errs: EventSheetErrors = {};
+      if (selectedsport == 0) errs.sport = "Please Select a sport !";
+      if (dateStr && new Date(dateStr).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)) errs.date = "Please choose a future Date !";
+      if (selSlots && selSlots.length == 0) errs.timeslots = "Please select at least 1 available time slot !";
+      setErrors(errs);
+      return Object.keys(errs).length === 0;
+    };
+
+
 
 
   const handleSave = useCallback(() => {
-    if (!title.trim()) return;
+    if (!validate()) return;
     let start: Date, end: Date;
     if (allDay || selSlots.length === 0) {
       start = parseDateTime(dateStr, "00:00");
@@ -183,6 +199,7 @@ useEffect(() => {
                 ))}
               </div>
             </div>
+            {errors.sport && <span className="field-err"><AlertIcon/>{errors.sport}</span>}
           </div>
 
           <div>
@@ -197,6 +214,7 @@ useEffect(() => {
                 }
               />
             </LocalizationProvider>
+            {errors.date && <span className="field-err"><AlertIcon/>{errors.date}</span>}
           </div>
 
           <div className="toggle-row">
@@ -277,8 +295,9 @@ useEffect(() => {
                     </button>
                   </>
                 )}
+                
               </div>
-
+              {errors.timeslots && <span className="field-err"><AlertIcon/>{errors.timeslots}</span>}
               {/* Slot grid grouped by period */}
               {SLOT_PERIODS?.map((period) => (
                 <div key={period.label}>

@@ -18,3 +18,9 @@ export interface FormErrors {
   confirm?:   string;
   terms?:     string;
 }
+
+export interface EventSheetErrors {
+  sport?: string;
+  date?:  string;
+  timeslots?:     string;
+}

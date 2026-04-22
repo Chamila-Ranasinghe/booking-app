@@ -24,13 +24,14 @@
     }
 
     .total-price-display {
+        padding-top: 5px;
         text-align: center;
 
         .total-tag {
             position: sticky;
             bottom: 50px;
             margin-left: auto;
-            background: $PrimaryBlack;
+            background: #25252e;
             color: white;
             padding: 6px 10px;
             border-top-left-radius: 10px;
