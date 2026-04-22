@@ -72,19 +72,14 @@ useEffect(() => {
   }
 }, [user]);
 
-  
-  // const [title, setTitle] = useState<string>(user?.isAdmin ? `${user?.firstname}` : `${user?.firstname} ${user?.lastname} - ${user?.phone}`);
-  // const titletag = user?.isAdmin ? title : `${user?.firstname} ${user?.lastname} - ${user?.phone}`
   const [title, setTitle] = useState<string>(event?.title ?? "");
   const [color, setColor] = useState<string>(event?.color ?? COLOR_PALETTE[0]);
   const [allDay, setAllDay] = useState<boolean>(event?.allDay ?? false);
-  const [recurringEvent, setRecurring] = useState<boolean>(
-    event?.recurringEvent ?? false,
-  );
-  const [selectedsport, setSport] = useState<number>(event?.sport ?? 1);
-  
-
+  const [recurringEvent, setRecurring] = useState<boolean>(event?.recurringEvent ?? false,);
+  const [selectedsport, setSport] = useState<number>(event?.sport ?? 0);
   const [selSlots, setSelSlots] = useState<number[]>(initialSlots);
+  const [sportRate, setSportRate] = useState<number>(sports?.data.find((v: SportInterface) => v.id == selectedsport)?.rate ?? 0);
+
   const toggleSlot = useCallback((hour: number, isbooked: boolean = false) => {
     if(isbooked) return;
     setSelSlots((prev) =>
@@ -97,8 +92,7 @@ useEffect(() => {
 
   const handleSave = useCallback(() => {
     if (!title.trim()) return;
-    let start: Date, end: Date, sportCharge: number;
-    sportCharge = sports?.data.find((sp : SportInterface)=> sp.id == selectedsport)?.rate || 0;
+    let start: Date, end: Date;
     if (allDay || selSlots.length === 0) {
       start = parseDateTime(dateStr, "00:00");
       end = parseDateTime(dateStr, "23:59");
@@ -122,7 +116,7 @@ useEffect(() => {
         ? [...selSlots].sort((a, b) => a - b)
         : undefined,
       date: parseDateTime(dateStr, `${String(selSlots[selSlots.length - 1] + 1).padStart(2, "0")}:00`),  
-      bookingPrice: selSlots.length * sportCharge
+      bookingPrice: selSlots.length * sportRate
     });
   }, [
     title,
@@ -178,11 +172,11 @@ useEffect(() => {
                 {sports?.data.map((sport:SportInterface) => (
                   <button
                     key={sport.id}
-                    onClick={() => setSport(sport.id)}
+                    onClick={() => {setSport(sport.id); setSportRate(sport.rate);}}
                     className={`ss-card${selectedsport === sport.id ? " ss-active" : ""}`}
                     aria-pressed={selectedsport === sport.id}
                     aria-label={sport.sportname}
-                  >
+                    >
                     <span className="ss-icon"><img src={sport.icon}></img></span>
                     <span className="ss-label">{sport.sportname}</span>
                   </button>
@@ -195,7 +189,6 @@ useEffect(() => {
             <div className="field-label">Date</div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                autoFocus
                 className="cal-input"
                 disablePast
                 defaultValue={dayjs(dateStr)}
@@ -324,11 +317,8 @@ useEffect(() => {
         </div>
         <div className="total-price-display">
           <span className="total-tag">
-            {selSlots.length} slots / Total: Rs:{" "}
-            {selSlots.length *
-              (sports?.data.find((v: SportInterface) => v.id == selectedsport)?.rate ||
-                0)}
-            .00
+            {selSlots.length} slots / Total: Rs:
+            {selSlots.length * sportRate}
           </span>
         </div>
         { !isPastEvent &&

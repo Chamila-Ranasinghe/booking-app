@@ -15,18 +15,20 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState(() => {
+  const storedUser = localStorage.getItem("user");
+  return storedUser ? JSON.parse(storedUser) : null;
+  });
   const [isAuthReady, setIsAuthReady] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
+  // const [token, setToken] = useState<string | null>(null);
 
   //Load from localStorage on app start
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
-    console.log(token);
     if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
-      setToken(storedToken);
+      // setToken(storedToken);
     }
     setIsAuthReady(true);
   }, []);
@@ -34,7 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Login
   const login = ({ user, token }: { user: User; token: string }) => {
     setUser(user);
-    setToken(token);
+    // setToken(token);
 
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("token", token);
@@ -43,7 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Logout
   const logout = () => {
     setUser(null);
-    setToken(null);
+    // setToken(null);
 
     localStorage.removeItem("user");
     localStorage.removeItem("token");

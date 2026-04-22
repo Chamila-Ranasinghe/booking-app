@@ -14,11 +14,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
     );
   }
 
-  if (!user) {
-    return <Navigate to="/signin" replace />;
-  }
-
-  return children;
+ return user ? children : <Navigate to="/signin" />;
 };
 
 export default ProtectedRoute;
