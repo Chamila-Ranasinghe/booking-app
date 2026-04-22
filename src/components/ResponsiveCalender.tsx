@@ -23,6 +23,7 @@ import { EventSheet } from "../components/EventSheetComponent";
 import { createRecords, getRecords, useApiMutation, useApiQuery, type ResponseObj } from "../api/common";
 import { createBooking, editBookings, getBookings,  } from "../api/APIclass";
 import { useAuth } from "./AuthManager/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 const NOW = new Date();
 // const CY = NOW.getFullYear();
@@ -59,6 +60,7 @@ const INITIAL_EVENTS: CalendarEvent[] = [];
    12. ROOT APP COMPONENT
 ══════════════════════════════════════════════════════════════ */
 const MobiScrollCalendar: FC = () => {
+  const queryClient = useQueryClient();
   const [events, setEvents] = useState<CalendarEvent[]>(INITIAL_EVENTS);
   const [viewYear, setViewYear] = useState<number>(NOW.getFullYear());
   const [viewMonth, setViewMonth] = useState<number>(NOW.getMonth());
@@ -168,6 +170,9 @@ const MobiScrollCalendar: FC = () => {
             if (response.success) {
               refetchBookings();
               setSheet(null);
+              queryClient.invalidateQueries({
+                queryKey: ["timeslots", requestObj.booking_date],
+              });
             }
           },
         });
@@ -179,6 +184,9 @@ const MobiScrollCalendar: FC = () => {
               if (response.success) {
                 refetchBookings();
                 setSheet(null);
+                queryClient.invalidateQueries({
+                queryKey: ["timeslots", requestObj.booking_date],
+              });
               }
             },
           });
