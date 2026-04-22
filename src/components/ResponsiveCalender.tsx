@@ -13,7 +13,6 @@ import "../css/ResponsiveCalender.scss";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
-  PlusIcon,
   LogoIcon,
 } from "../icons/CalenderIcons";
 import { MonthGrid } from "../components/MonthGridComponent";
@@ -76,6 +75,7 @@ const MobiScrollCalendar: FC = () => {
   const editEvent = useApiMutation(createRecords(editBookings),["edit_booking"]);
   const {data: bookingData, refetch: refetchBookings } = 
   useApiQuery(["allbookings"], getRecords(getBookings));
+  const [pressed, setPressed] = useState(false);
 
   useEffect(() => {
     if (bookingData?.data) {
@@ -275,20 +275,41 @@ const MobiScrollCalendar: FC = () => {
           )}
 
           {/* Add event — pill on desktop, circle on mobile */}
-          <button
+          {/* <button
             className="btn-add-desktop"
             onClick={() => setSheet({ mode: "add" })}
             aria-label="Add event"
           >
             <PlusIcon /> BOOK
-          </button>
+          </button> */}
+
           <button
+            className={`gp-btn${pressed ? " pressed" : ""}`}
+            onClick={() => {
+              setPressed(true);
+              setTimeout(() => setPressed(false), 150);
+              setSheet({ mode: "add" });}}
+          >
+            <div className="gp-inner">
+              <span className="gp-text">Book Now</span>
+              {/* <span className="gp-icon">→</span> */}
+              {/* {ripples.map((r:any) => (
+                <span
+                  key={r.id}
+                  className="ripple"
+                  style={{ left: r.x, top: r.y }}
+                />
+              ))} */}
+            </div>
+          </button>
+
+          {/* <button
             className="btn-add-mobile"
             onClick={() => setSheet({ mode: "add" })}
             aria-label="Add event"
           >
             <PlusIcon />
-          </button>
+          </button> */}
         </div>
       </header>
 
