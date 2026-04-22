@@ -201,8 +201,8 @@ const MobiScrollCalendar: FC = () => {
     setSheet(null);
   }, []);
 
-  const isCurrentMonth =
-    viewYear === NOW.getFullYear() && viewMonth === NOW.getMonth();
+  // const isCurrentMonth =
+  //   viewYear === NOW.getFullYear() && viewMonth === NOW.getMonth();
 
   const monthEventCount = useMemo(
     () =>
@@ -272,7 +272,7 @@ const MobiScrollCalendar: FC = () => {
             <button className="today-pill" onClick={goToday}>
               Today
             </button>
-            
+
           {/* Add event — pill on desktop, circle on mobile */}
           {/* <button
             className="btn-add-desktop"
