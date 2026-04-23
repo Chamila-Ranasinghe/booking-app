@@ -23,4 +23,5 @@ export interface EventSheetErrors {
   sport?: string;
   date?:  string;
   timeslots?:     string;
+  title?:  string;
 }

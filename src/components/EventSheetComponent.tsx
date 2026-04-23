@@ -1,5 +1,5 @@
 import { useCallback, useState, useMemo, type FC, useEffect } from "react";
-import { type EventSheetProps } from "../classes/CalendarClass";
+import { BookingStatus, type EventSheetProps } from "../classes/CalendarClass";
 import { COLOR_PALETTE, type SportInterface} from "../classes/CalendarData";
 import { parseDateTime, toDateInput } from "../classes/CalendarFunctions";
 import { XIcon } from "../icons/CalenderIcons";
@@ -67,11 +67,10 @@ const isPastEvent: boolean = event?.date && new Date(event.date).setHours(0, 0, 
 useEffect(() => {
  
   if (!user) return;
-  if (user.isAdmin) {
-    setTitle(""); // or keep existing if needed
-  } else {
+  if (!user.isAdmin) {
     setTitle(`${user.firstname} ${user.lastname} - ${user.phone}`);
   }
+  
 }, [user]);
 
   const [errors,   setErrors]   = useState<EventSheetErrors>({});
@@ -96,6 +95,7 @@ useEffect(() => {
 
   const validate = (): boolean => {
       const errs: EventSheetErrors = {};
+      if(!title.trim()) errs.title = "Please enter a booking name";
       if (selectedsport == 0) errs.sport = "Please Select a sport !";
       if (dateStr && new Date(dateStr).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)) errs.date = "Please choose a future Date !";
       if (selSlots && selSlots.length == 0) errs.timeslots = "Please select at least 1 available time slot !";
@@ -179,6 +179,7 @@ useEffect(() => {
               disabled={!user?.isAdmin}
               onChange={(e) => setTitle(e.target.value)}
             />
+            {errors.title && <span className="field-err"><AlertIcon/>{errors.title}</span>}
           </div>
 
           <div>
@@ -340,9 +341,9 @@ useEffect(() => {
             {selSlots.length * sportRate}
           </span>
         </div>
-        { !isPastEvent &&
+        { (!isPastEvent && event?.status != BookingStatus.CONFIRMED) &&
         <div className="sheet-footer" >
-          {isEdit && event && (
+          {(isEdit && event) && (
             <button
               className="btn btn-danger"
               onClick={() => onDelete(event.id)}

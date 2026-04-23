@@ -891,11 +891,19 @@
 .btn-danger {
   background: var(--danger);
   color: $TextWhite;
-  // flex: 0 0 auto;
-  // padding: 0 16px;
   border-radius: var(--radius-pill);
 }
 .btn-danger:hover {
+  background: $GreyMobile;
+}
+
+.btn-reject{
+  background: $red;
+  color: $TextWhite;
+  border-radius: var(--radius-pill);
+}
+
+.btn-reject:hover {
   background: $GreyMobile;
 }
 

@@ -43,6 +43,7 @@ export interface DetailSheetProps {
   onEdit: (ev: CalendarEvent) => void;
   onDelete: (id: number) => void;
   onClose: () => void;
+  onConfirm: (ev: CalendarEvent) => void;
 }
 
 export interface EventCardProps {

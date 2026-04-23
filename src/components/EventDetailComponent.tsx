@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { type DetailSheetProps } from "../classes/CalendarClass";
+import { BookingStatus, type DetailSheetProps } from "../classes/CalendarClass";
 import { XIcon } from "../icons/CalenderIcons";
 import "../css/EventDetailComponent.scss";
 import { useAuth } from "./AuthManager/AuthContext";
@@ -12,6 +12,7 @@ export const DetailSheet: FC<DetailSheetProps> = ({
   onEdit,
   onDelete,
   onClose,
+  onConfirm,
 }) => {
   const { user } = useAuth();
   const { data: timeSlot} = useApiQuery(
@@ -57,7 +58,7 @@ export const DetailSheet: FC<DetailSheetProps> = ({
         <div className="detail-title">{event.title}</div>
         <div className="detail-time"> {timeRange[timeRange.length - 1]} <span style={{ color: event.color }}> / </span> {timeRange[0]}</div>
         <div className="sheet-footer">
-          {!isPastEvent &&<button
+          {(!isPastEvent && event.status != BookingStatus.CONFIRMED) &&<button
             className="btn btn-danger"
             onClick={() => {
               onDelete(event.id);
@@ -67,11 +68,12 @@ export const DetailSheet: FC<DetailSheetProps> = ({
             Delete
           </button>}
           <button className="btn btn-primary" onClick={() => onEdit(event)}>
-            {isPastEvent? "View":  "Edit"}
+            {(isPastEvent || event.status == BookingStatus.CONFIRMED)?  "View":  "Edit"}
           </button>
-          { user?.isAdmin && <button className="btn btn-secondary" onClick={() => onEdit(event)}>
+          { (user?.isAdmin && !isPastEvent && event.status != BookingStatus.CONFIRMED) && <button className="btn btn-secondary" onClick={() => onConfirm(event)}>
             Confirm
-          </button>}
+          </button>
+          }
         </div>
         <div style={{ height: 8 }} />
       </div>

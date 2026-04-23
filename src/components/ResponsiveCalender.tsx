@@ -20,39 +20,11 @@ import { DetailSheet } from "../components/EventDetailComponent";
 import { AgendaPanel } from "../components/AgendaPanelComponent";
 import { EventSheet } from "../components/EventSheetComponent";
 import { createRecords, getRecords, useApiMutation, useApiQuery, type ResponseObj } from "../api/common";
-import { createBooking, editBookings, getBookings,  } from "../api/APIclass";
+import { createBooking, editBookings, getBookings, confirmEvents, deleteEvents} from "../api/APIclass";
 import { useAuth } from "./AuthManager/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
 
 const NOW = new Date();
-// const CY = NOW.getFullYear();
-// const CM = NOW.getMonth();
-
-
-// function mkEvent(
-//   id: number,
-//   title: string,
-//   color: string,
-//   allDay = false,
-//   recurringEvent = false,
-//   sport: number,
-//   timeSlots: number[],
-//   date : Date
-// ): CalendarEvent {
-//   return {
-//     id,
-//     title,
-//     color,
-//     allDay,
-//     start: new Date(date),
-//     end: new Date(date),
-//     recurringEvent,
-//     sport,
-//     timeSlots,
-//     date,
-//   };
-// }
-
 const INITIAL_EVENTS: CalendarEvent[] = [];
 
 /* ══════════════════════════════════════════════════════════════
@@ -73,6 +45,8 @@ const MobiScrollCalendar: FC = () => {
   const { user } = useAuth();
   const saveEvent = useApiMutation(createRecords(createBooking), ["create_booking"]);
   const editEvent = useApiMutation(createRecords(editBookings),["edit_booking"]);
+  const confirmEvent = useApiMutation(createRecords(confirmEvents),["confirm_booking"]);
+  const deleteEvent = useApiMutation(createRecords(deleteEvents),["delete_booking"]);
   const {data: bookingData, refetch: refetchBookings } = 
   useApiQuery(["allbookings"], getRecords(getBookings));
   const [pressed, setPressed] = useState(false);
@@ -81,7 +55,7 @@ const MobiScrollCalendar: FC = () => {
     if (bookingData?.data) {
       const mappedEvents = bookingData.data.map((item: any) => ({
         id: item.BookingId.toString(),
-        title: item.sportname,
+        title: item.eventTitle,
         date: item.booking_date,
         start: new Date(item.booking_date),
         end: new Date(item.booking_date),
@@ -197,8 +171,36 @@ const MobiScrollCalendar: FC = () => {
   );
 
   const handleDelete = useCallback((id: number) => {
-    setEvents((prev) => prev.filter((e) => e.id !== id));
-    setSheet(null);
+    if (id) {
+      let requestObj = {
+        bookingId: id,
+      };
+      deleteEvent.mutate(requestObj, {
+        onSuccess: (response: ResponseObj<any>) => {
+          if (response.success) {
+            refetchBookings();
+            setSheet(null);
+          }
+        },
+      });
+    }
+  }, []);
+
+  const handleOnconfirm = useCallback((data: CalendarEvent) => {
+    if (data) {
+      let requestObj = {
+        bookingId: data?.id,
+      };
+      confirmEvent.mutate(requestObj, {
+        onSuccess: (response: ResponseObj<any>) => {
+          if (response.success) {
+            refetchBookings();
+            setSheet(null);
+
+          }
+        },
+      });
+    }
   }, []);
 
   // const isCurrentMonth =
@@ -268,10 +270,11 @@ const MobiScrollCalendar: FC = () => {
           )}
 
           {/* Today button — only when not on current month */}
-          
+          {/* {!isCurrentMonth && (
             <button className="today-pill" onClick={goToday}>
               Today
             </button>
+          )} */}
 
           {/* Add event — pill on desktop, circle on mobile */}
           {/* <button
@@ -364,6 +367,7 @@ const MobiScrollCalendar: FC = () => {
           onEdit={(ev) => setSheet({ mode: "edit", event: ev })}
           onDelete={handleDelete}
           onClose={() => setSheet(null)}
+          onConfirm={(ev)=> handleOnconfirm(ev)} 
         />
       )}
     </div>
