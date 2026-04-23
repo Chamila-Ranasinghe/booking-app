@@ -101,15 +101,15 @@ const MobiScrollCalendar: FC = () => {
     [viewMonth, viewYear],
   );
 
-  // const goToday = useCallback(() => {
-  //   const t = new Date();
-  //   setViewYear(t.getFullYear());
-  //   setViewMonth(t.getMonth());
-  //   setSelectedDay(startOf(t));
-  //   setSlideClass("slide-left");
-  //   setTimeout(() => setSlideClass(""), 320);
-  //   if (agendaRef.current) agendaRef.current.scrollTop = 0;
-  // }, []);
+  const goToday = useCallback(() => {
+    const t = new Date();
+    setViewYear(t.getFullYear());
+    setViewMonth(t.getMonth());
+    setSelectedDay(startOf(t));
+    setSlideClass("slide-left");
+    setTimeout(() => setSlideClass(""), 320);
+    if (agendaRef.current) agendaRef.current.scrollTop = 0;
+  }, []);
 
   const handleSelectDay = useCallback((date: Date) => {
     setSelectedDay((prev) => (prev && sameDay(prev, date) ? null : date));
@@ -203,8 +203,8 @@ const MobiScrollCalendar: FC = () => {
     }
   }, []);
 
-  // const isCurrentMonth =
-  //   viewYear === NOW.getFullYear() && viewMonth === NOW.getMonth();
+  const isCurrentMonth =
+    viewYear === NOW.getFullYear() && viewMonth === NOW.getMonth();
 
   const monthEventCount = useMemo(
     () =>
@@ -270,11 +270,11 @@ const MobiScrollCalendar: FC = () => {
           )}
 
           {/* Today button — only when not on current month */}
-          {/* {!isCurrentMonth && (
-            <button className="today-pill" onClick={goToday}>
+          {!isCurrentMonth && (
+            <button className="today-pill"  onClick={goToday}>
               Today
             </button>
-          )} */}
+          )}
 
           {/* Add event — pill on desktop, circle on mobile */}
           {/* <button

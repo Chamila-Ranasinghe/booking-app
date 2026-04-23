@@ -119,6 +119,7 @@
   cursor: pointer;
   white-space: nowrap;
   transition: all var(--transition);
+  display: none;
 }
 .today-pill:hover {
   border-color: var(--accent);
