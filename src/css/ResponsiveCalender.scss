@@ -908,6 +908,25 @@
   background: $GreyMobile;
 }
 
+.btn-black{
+   background-color: $CardDark;
+   color: $HoverGreen;
+   border: 1px solid;
+}
+
+.btn-black:hover{
+  color: $TextWhite;
+  background-color: $PrimaryBlack;
+  border: 1px solid $TextWhite;
+}
+
+.bgk-black-theme{
+  background-color: $CardDark;
+  color: $TextWhite !important;
+}
+
+
+
 .detail-color-strip {
   height: 4px;
   // margin: 20px 50px 0;

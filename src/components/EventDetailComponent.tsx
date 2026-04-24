@@ -41,7 +41,7 @@ export const DetailSheet: FC<DetailSheetProps> = ({
       className={`overlay ${isDesktop ? "modal-mode" : ""}`}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className={isDesktop ? "modal" : "modal"}>
+      <div className={isDesktop ? "modal bgk-black-theme" : "modal bgk-black-theme"}>
         <div className="close-button-event-details">
           <button className="close-btn" onClick={onClose}>
             <XIcon />
@@ -55,11 +55,11 @@ export const DetailSheet: FC<DetailSheetProps> = ({
             borderLeft: `50px solid ${event.color}`,
           }}
         ></div>
-        <div className="detail-title">{event.title}</div>
-        <div className="detail-time"> {timeRange[timeRange.length - 1]} <span style={{ color: event.color }}> / </span> {timeRange[0]}</div>
-        <div className="sheet-footer">
+        <div className="detail-title bgk-black-theme">{event.title}</div>
+        <div className="detail-time bgk-black-theme"> {timeRange[timeRange.length - 1]} <span style={{ color: event.color }}> / </span> {timeRange[0]}</div>
+        <div className="sheet-footer bgk-black-theme" style={{ border: "0px"}}>
           {(!isPastEvent && event.status != BookingStatus.CONFIRMED) &&<button
-            className="btn btn-danger"
+            className="btn btn-danger btn-black"
             onClick={() => {
               onDelete(event.id);
               onClose();
@@ -67,15 +67,15 @@ export const DetailSheet: FC<DetailSheetProps> = ({
           >
             Delete
           </button>}
-          <button className="btn btn-primary" onClick={() => onEdit(event)}>
+          <button className="btn btn-primary btn-black" onClick={() => onEdit(event)}>
             {(isPastEvent || event.status == BookingStatus.CONFIRMED)?  "View":  "Edit"}
           </button>
-          { (user?.isAdmin && !isPastEvent && event.status != BookingStatus.CONFIRMED) && <button className="btn btn-secondary" onClick={() => onConfirm(event)}>
+          { (user?.isAdmin && !isPastEvent && event.status != BookingStatus.CONFIRMED) && <button className="btn btn-secondary btn-black" onClick={() => onConfirm(event)}>
             Confirm
           </button>
           }
         </div>
-        <div style={{ height: 8 }} />
+        {/* <div style={{ height: 8 }} /> */}
       </div>
     </div>
   );
