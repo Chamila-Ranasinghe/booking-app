@@ -129,7 +129,7 @@ const MobiScrollCalendar: FC = () => {
           title: data.title,
           sport_id: data.sport,
           client_id: user?.id,
-          booking_date: new Date(data.date).toISOString().split('T')[0],
+          booking_date: new Date(data.date).toLocaleDateString("en-CA"),
           is_recurr_event: data.recurringEvent,
           is_all_day: data.allDay,
           status: BookingStatus.PENDING,
