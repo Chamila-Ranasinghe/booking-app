@@ -1,7 +1,7 @@
 import { useCallback, useState, useMemo, type FC, useEffect } from "react";
 import { BookingStatus, type EventSheetProps } from "../classes/CalendarClass";
 import { COLOR_PALETTE, type SportInterface} from "../classes/CalendarData";
-import { parseDateTime, toDateInput } from "../classes/CalendarFunctions";
+import { toDateInput } from "../classes/CalendarFunctions";
 import { XIcon } from "../icons/CalenderIcons";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
