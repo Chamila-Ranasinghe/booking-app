@@ -11,9 +11,10 @@ import "../css/EventSheetComponent.scss";
 import { getRecords, useApiQuery } from "../api/common";
 import { getSports, getTimeSlots } from "../api/APIclass";
 import { useAuth } from "./AuthManager/AuthContext";
-import ThreeDots from "./ThreeDots";
 import type { EventSheetErrors } from "../classes/RegisterClass";
 import { AlertIcon } from "../icons/RegisterIcons";
+import Catalog from "./loaders/Catalog";
+import AuthorsList from "./loaders/AuthorsList";
 
 export const EventSheet: FC<EventSheetProps> = ({
   event,
@@ -25,13 +26,14 @@ export const EventSheet: FC<EventSheetProps> = ({
 }) => {
 
   const [dateStr, setDateStr] = useState<string>(
-    toDateInput(event?.start ?? defaultDate),
+    toDateInput(event?.date ?? defaultDate),
   );
   const isEdit = Boolean(event);
   const { user } = useAuth();
   const {data : sports, isLoading: isSportsLoading } = useApiQuery(["sports"],getRecords(getSports));
   const {data : timeSlot, isLoading: isTimeSlotsLoading} = useApiQuery(["timeslots", dateStr],getRecords(getTimeSlots, {date: dateStr}));
   const ALL_SLOTS = timeSlot?.data;
+  let recurringDefaultDate = new Date;
 
   
 const SLOT_PERIODS = [
@@ -70,6 +72,8 @@ useEffect(() => {
   if (!user.isAdmin) {
     setTitle(`${user.firstname} ${user.lastname} - ${user.phone}`);
   }
+
+  recurringDefaultDate = new Date(new Date(dateStr).setDate(new Date(dateStr).getDate() + 1));
   
 }, [user]);
 
@@ -81,6 +85,7 @@ useEffect(() => {
   const [selectedsport, setSport] = useState<number>(event?.sport ?? 0);
   const [selSlots, setSelSlots] = useState<number[]>(initialSlots);
   const [sportRate, setSportRate] = useState<number>(sports?.data.find((v: SportInterface) => v.id == selectedsport)?.rate ?? 0);
+  const [recurringEndDate, setrecurringEndDate] = useState<string>(toDateInput(event?.recurringEndDate ?? recurringDefaultDate));
 
   const toggleSlot = useCallback((hour: number, isbooked: boolean = false) => {
     if(isbooked) return;
@@ -91,6 +96,12 @@ useEffect(() => {
 
   const clearSlots = useCallback(() => setSelSlots([]), []);
  
+  const handleDateChange = useCallback((bookingdate: string) =>{
+    setDateStr(bookingdate)
+    let recurrdate = new Date(new Date(bookingdate).setDate(new Date(bookingdate).getDate() + 1)).toDateString();
+    setrecurringEndDate(recurrdate);
+    console.log(recurrdate);
+  },[]);
   
 
   const validate = (): boolean => {
@@ -98,27 +109,34 @@ useEffect(() => {
       if(!title.trim()) errs.title = "Please enter a booking name";
       if (selectedsport == 0) errs.sport = "Please Select a sport !";
       if (dateStr && new Date(dateStr).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)) errs.date = "Please choose a future Date !";
+      // if (recurringEvent && new Date(recurringEndDate).setHours(0, 0, 0, 0) == new Date(dateStr).setHours(0, 0, 0, 0)) errs.recurringEndDate = "Recurring date should be a future date"
       if (selSlots && selSlots.length == 0) errs.timeslots = "Please select at least 1 available time slot !";
       setErrors(errs);
       return Object.keys(errs).length === 0;
     };
 
-
-
-
   const handleSave = useCallback(() => {
     if (!validate()) return;
-    let start: Date, end: Date;
+    let start: Date | undefined, end: Date;
+    const recurringDatesArray = [];
     if (allDay || selSlots.length === 0) {
       start = parseDateTime(dateStr, "00:00");
       end = parseDateTime(dateStr, "23:59");
-    } else {
-      const sorted = [...selSlots].sort((a, b) => a - b);
-      const sh = sorted[0];
-      const eh = sorted[sorted.length - 1] + 1;
-      start = parseDateTime(dateStr, `${String(sh).padStart(2, "0")}:00`);
-      end = parseDateTime(dateStr, `${String(eh).padStart(2, "0")}:00`);
+    } else if (recurringEvent && recurringEndDate) {
+      let current = dayjs(dateStr);
+      const end = dayjs(recurringEndDate);
+
+      while (current.isBefore(end) || current.isSame(end, "day")) {
+        recurringDatesArray.push(current.format("YYYY-MM-DD"));
+        current = current.add(1, "week");
+      }
     }
+    const sorted = [...selSlots].sort((a, b) => a - b);
+    const sh = sorted[0];
+    const eh = sorted[sorted.length - 1] + 1;
+    start = parseDateTime(dateStr, `${String(sh).padStart(2, "0")}:00`);
+    end = parseDateTime(dateStr, `${String(eh).padStart(2, "0")}:00`);
+
     onSave({
       id: event?.id,
       title: title.trim(),
@@ -131,8 +149,13 @@ useEffect(() => {
       timeSlots: selSlots.length
         ? [...selSlots].sort((a, b) => a - b)
         : undefined,
-      date: parseDateTime(dateStr, `${String(selSlots[selSlots.length - 1] + 1).padStart(2, "0")}:00`),  
-      bookingPrice: selSlots.length * sportRate
+      date: parseDateTime(
+        dateStr,
+        `${String(selSlots[selSlots.length - 1] + 1).padStart(2, "0")}:00`,
+      ),
+      bookingPrice: selSlots.length * sportRate,
+      recurringDates: recurringDatesArray,
+      recurringEndDate: parseDateTime(recurringEndDate, `${String(eh).padStart(2, "0")}:00`)
     });
   }, [
     title,
@@ -143,7 +166,7 @@ useEffect(() => {
     selectedsport,
     recurringEvent,
     event,
-    onSave
+    onSave,
   ]);
 
   /* Sorted selected slots for display */
@@ -153,10 +176,10 @@ useEffect(() => {
   );
 
   return (
-    (isSportsLoading || isTimeSlotsLoading) ? ( <div><ThreeDots /></div>) : 
-    (<div
+    <div
       className={`overlay ${isDesktop ? "modal-mode" : ""}`}
-      onClick={(e) => e.target === e.currentTarget && onClose()}>
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className={isDesktop ? "modal" : "sheet"}>
         {!isDesktop && <div className="sheet-handle" />}
 
@@ -179,28 +202,49 @@ useEffect(() => {
               disabled={!user?.isAdmin}
               onChange={(e) => setTitle(e.target.value)}
             />
-            {errors.title && <span className="field-err"><AlertIcon/>{errors.title}</span>}
+            {errors.title && (
+              <span className="field-err">
+                <AlertIcon />
+                {errors.title}
+              </span>
+            )}
           </div>
 
           <div>
             <div className="field-label">Sport</div>
             <div className="select-wrap">
               <div className="ss-grid">
-                {sports?.data.map((sport:SportInterface) => (
-                  <button
-                    key={sport.id}
-                    onClick={() => {setSport(sport.id); setSportRate(sport.rate);}}
-                    className={`ss-card${selectedsport === sport.id ? " ss-active" : ""}`}
-                    aria-pressed={selectedsport === sport.id}
-                    aria-label={sport.sportname}
+                {isSportsLoading ? (
+                  <div className="sports-loader">
+                    <Catalog />
+                  </div>
+                ) : (
+                  sports?.data.map((sport: SportInterface) => (
+                    <button
+                      key={sport.id}
+                      onClick={() => {
+                        setSport(sport.id);
+                        setSportRate(sport.rate);
+                      }}
+                      className={`ss-card${selectedsport === sport.id ? " ss-active" : ""}`}
+                      aria-pressed={selectedsport === sport.id}
+                      aria-label={sport.sportname}
                     >
-                    <span className="ss-icon"><img src={sport.icon}></img></span>
-                    <span className="ss-label">{sport.sportname}</span>
-                  </button>
-                ))}
+                      <span className="ss-icon">
+                        <img src={sport.icon}></img>
+                      </span>
+                      <span className="ss-label">{sport.sportname}</span>
+                    </button>
+                  ))
+                )}
               </div>
             </div>
-            {errors.sport && <span className="field-err"><AlertIcon/>{errors.sport}</span>}
+            {errors.sport && (
+              <span className="field-err">
+                <AlertIcon />
+                {errors.sport}
+              </span>
+            )}
           </div>
 
           <div>
@@ -211,11 +255,19 @@ useEffect(() => {
                 disablePast
                 defaultValue={dayjs(dateStr)}
                 onChange={(newvalue) =>
-                  setDateStr(newvalue ? newvalue.format("YYYY-MM-DD") : "")
+                  // setDateStr(newvalue ? newvalue.format("YYYY-MM-DD") : "")
+                  handleDateChange(
+                    newvalue ? newvalue.format("YYYY-MM-DD") : ""
+                  )
                 }
               />
             </LocalizationProvider>
-            {errors.date && <span className="field-err"><AlertIcon/>{errors.date}</span>}
+            {errors.date && (
+              <span className="field-err">
+                <AlertIcon />
+                {errors.date}
+              </span>
+            )}
           </div>
 
           <div className="toggle-row">
@@ -224,12 +276,40 @@ useEffect(() => {
               className={`toggle-btn ${recurringEvent ? "on" : ""}`}
               onClick={() => setRecurring((v) => !v)}
             />
+            {recurringEvent && (
+              <>
+               
+                <span className="toggle-label">End Date</span>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    className="cal-input calinput-width"
+                    minDate={dayjs(dateStr)}
+                    defaultValue={dayjs(recurringEndDate)}
+                    onChange={(newvalue) =>
+                      setrecurringEndDate(
+                        newvalue ? newvalue.format("YYYY-MM-DD") : "",
+                      )
+                    }
+                    value={dayjs(recurringEndDate)}
+                  />
+                </LocalizationProvider>
+                 {/* {errors.recurringEndDate && (
+              <span className="field-err">
+                <AlertIcon />
+                {errors.recurringEndDate}
+              </span>
+            )} */}
+            
+              </>
+            )}
           </div>
           <div className="toggle-row">
             <span className="toggle-label">All-day event</span>
             <button
               className={`toggle-btn ${allDay ? "on" : ""}`}
-              onClick={() => setAllDay((v) => !v)}
+              onClick={() => {
+                if(!isEdit) clearSlots();
+                setAllDay((v) => !v);}}
             />
           </div>
 
@@ -296,28 +376,38 @@ useEffect(() => {
                     </button>
                   </>
                 )}
-                
               </div>
-              {errors.timeslots && <span className="field-err"><AlertIcon/>{errors.timeslots}</span>}
+              {errors.timeslots && (
+                <span className="field-err">
+                  <AlertIcon />
+                  {errors.timeslots}
+                </span>
+              )}
               {/* Slot grid grouped by period */}
-              {SLOT_PERIODS?.map((period) => (
-                <div key={period.label}>
-                  <div className="slot-period-label">{period.label}</div>
-                  <div className="slot-grid">
-                    {period?.slots?.map(
-                      ({ id, timeSlotName, isbooked }: any) => (
-                        <div
-                          key={id}
-                          className={`slot-pill ${selSlots.includes(id) ? "slot-selected" : isbooked ? "booked" : ""}`}
-                          onClick={() => toggleSlot(id, isbooked)}
-                        >
-                          {timeSlotName}
-                        </div>
-                      ),
-                    )}
-                  </div>
+              {isTimeSlotsLoading ? (
+                <div>
+                  <AuthorsList />
                 </div>
-              ))}
+              ) : (
+                SLOT_PERIODS?.map((period) => (
+                  <div key={period.label}>
+                    <div className="slot-period-label">{period.label}</div>
+                    <div className="slot-grid">
+                      {period?.slots?.map(
+                        ({ id, timeSlotName, isbooked }: any) => (
+                          <div
+                            key={id}
+                            className={`slot-pill ${selSlots.includes(id) ? "slot-selected" : isbooked ? "booked" : ""}`}
+                            onClick={() => toggleSlot(id, isbooked)}
+                          >
+                            {timeSlotName}
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           )}
 
@@ -341,21 +431,22 @@ useEffect(() => {
             {selSlots.length * sportRate}
           </span>
         </div>
-        { (!isPastEvent && event?.status != BookingStatus.CONFIRMED) &&
-        <div className="sheet-footer" >
-          {(isEdit && event) && (
-            <button
-              className="btn btn-danger"
-              onClick={() => onDelete(event.id)}
-            >
-              Delete
+        {!isPastEvent && event?.status != BookingStatus.CONFIRMED && (
+          <div className="sheet-footer">
+            {isEdit && event && (
+              <button
+                className="btn btn-danger"
+                onClick={() => onDelete(event.id)}
+              >
+                Delete
+              </button>
+            )}
+            <button className="btn btn-primary" onClick={handleSave}>
+              {isEdit ? "Save Changes" : "Book"}
             </button>
-          )}
-          <button className="btn btn-primary" onClick={handleSave}>
-            {isEdit ? "Save Changes" : "Book"}
-          </button>
-        </div>}
+          </div>
+        )}
       </div>
-    </div>)
+    </div>
   );
 };

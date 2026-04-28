@@ -135,7 +135,9 @@ const MobiScrollCalendar: FC = () => {
           status: BookingStatus.PENDING,
           timeSlots: data.timeSlots,
           color: data.color,
-          booking_price:data.bookingPrice
+          booking_price:data.bookingPrice,
+          // recurringEventEndDate: data.recurringEndDate,
+          recurringDates: data.recurringDates
         };
       if (!data.id) {
         /// saving a new event

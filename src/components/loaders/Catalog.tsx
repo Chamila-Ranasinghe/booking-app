@@ -1,0 +1,24 @@
+
+import ContentLoader, { type IContentLoaderProps } from 'react-content-loader'
+import type { JSX } from 'react/jsx-runtime'
+
+const Catalog = (props: JSX.IntrinsicAttributes & IContentLoaderProps) => (
+  <ContentLoader viewBox="0 0 900 507" height={160} width={420} {...props}>
+    <rect x="30" y="20" rx="0" ry="0" width="130" height="23" />
+    <rect x="30" y="60" rx="0" ry="0" width="200" height="120" />
+    <rect x="30" y="189" rx="0" ry="0" width="200" height="15" />
+    <rect x="30" y="211" rx="0" ry="0" width="140" height="15" />
+    <rect x="243" y="60" rx="0" ry="0" width="200" height="120" />
+    <rect x="243" y="189" rx="0" ry="0" width="200" height="15" />
+    <rect x="243" y="211" rx="0" ry="0" width="140" height="15" />
+    <rect x="455" y="60" rx="0" ry="0" width="200" height="120" />
+    <rect x="455" y="189" rx="0" ry="0" width="200" height="15" />
+    <rect x="455" y="211" rx="0" ry="0" width="140" height="15" />
+    <rect x="667" y="60" rx="0" ry="0" width="200" height="120" />
+    <rect x="667" y="188" rx="0" ry="0" width="200" height="15" />
+    <rect x="667" y="209" rx="0" ry="0" width="140" height="15" />
+  </ContentLoader>
+)
+
+
+export default Catalog

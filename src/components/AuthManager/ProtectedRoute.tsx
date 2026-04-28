@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import type { JSX } from "react";
-import ThreeDots from "../ThreeDots";
+import ThreeDots from "../loaders/ThreeDots";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const { user, isAuthReady } = useAuth();

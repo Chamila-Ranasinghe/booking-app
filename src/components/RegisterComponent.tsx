@@ -5,7 +5,7 @@ import {UserIcon, EmailIcon, LockIcon, PhoneIcon, EyeIcon, CheckIcon, AlertIcon,
 import type {FormState, FormErrors } from "../classes/RegisterClass";
 import { createRecords, useApiMutation, type ResponseObj } from "../api/common";
 import { createUser, OtpVerification, verifyemail } from "../api/APIclass";
-import ThreeDots from "./ThreeDots";
+import ThreeDots from "./loaders/ThreeDots";
 
 
 

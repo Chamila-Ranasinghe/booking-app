@@ -24,4 +24,5 @@ export interface EventSheetErrors {
   date?:  string;
   timeslots?:     string;
   title?:  string;
+  recurringEndDate?: string
 }

@@ -149,7 +149,12 @@ export default function NavBar(props: Props) {
               <button
                 className="nav-cta"
                 onClick={() => {
-                  navigate("/signin");
+                  if(!user){
+                      navigate("/signin");
+                  }else{
+                    navigate("/calendar");
+                  }
+                  
                   setHomepage(false);
                 }}
               >
@@ -158,7 +163,7 @@ export default function NavBar(props: Props) {
             </div>
           )}
 
-          {user ? (
+          {(user && !isHomePage) ? (
             <div className="logged-profile">
               <IconButton
                 size="large"
@@ -216,7 +221,7 @@ export default function NavBar(props: Props) {
               </Menu>
             </div>
           ) : (
-            !isHomePage && (
+            (!isHomePage && !user) && (
               <div className="signIn">
                 {signInItems.map((item) => (
                   <NavLink

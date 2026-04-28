@@ -1,5 +1,5 @@
 import ContentLoader from "react-content-loader";
-import "../css/ThreeDots.scss";
+import "../../css/ThreeDots.scss";
 
 const ThreeDots = (props: any) => (
   <div className="three-dots">

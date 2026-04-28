@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import type { DayCell } from "../classes/CalendarClass";
 import type { CalendarEvent } from "../classes/CalendarClass";
 
@@ -49,7 +50,7 @@ export function getEventsForDay(
   events: CalendarEvent[],
   date: Date,
 ): CalendarEvent[] {
-  return events
+    return events
     .filter((ev) => sameDay(ev.start, date))
     .sort((a, b) => {
       if (a.allDay && !b.allDay) return -1;
@@ -77,12 +78,8 @@ export function getMonthEventDays(
   return days.sort((a, b) => a.getTime() - b.getTime());
 }
 
-export function toDateInput(date: Date): string {
-  return [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, "0"),
-    String(date.getDate()).padStart(2, "0"),
-  ].join("-");
+export function toDateInput(date: Date | string | dayjs.Dayjs): string {
+  return dayjs(date).format("YYYY-MM-DD");
 }
 
 export function toTimeInput(date: Date): string {

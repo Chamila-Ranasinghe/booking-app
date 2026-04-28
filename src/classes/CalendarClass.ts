@@ -14,6 +14,9 @@ export interface CalendarEvent {
   sportName?:string;
   bookingPrice?: number;
   status?:number;
+  recurringEndDate:Date;
+  recurringDates?:string [];
+
 }
 
 export interface DayCell {
