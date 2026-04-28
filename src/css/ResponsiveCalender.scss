@@ -1151,7 +1151,7 @@
   }
 }
 
-@media (min-width: 250px) and (max-width: 470px) {
+@media (min-width: 250px) and (max-width: 599px) {
   .topbar-nav {
     gap: 1px;
 
@@ -1179,6 +1179,11 @@
 @media (min-width: 651px) and (max-width: 765px) {
    .topbar{
     top:80px;
+  }
+}
+@media (min-width: 600px) and (max-width: 650px) {
+  .topbar{
+    top:70px;
   }
 }
 

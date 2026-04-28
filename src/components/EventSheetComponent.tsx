@@ -110,19 +110,16 @@ useEffect(() => {
       if (selectedsport == 0) errs.sport = "Please Select a sport !";
       if (dateStr && new Date(dateStr).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)) errs.date = "Please choose a future Date !";
       // if (recurringEvent && new Date(recurringEndDate).setHours(0, 0, 0, 0) == new Date(dateStr).setHours(0, 0, 0, 0)) errs.recurringEndDate = "Recurring date should be a future date"
-      if (selSlots && selSlots.length == 0) errs.timeslots = "Please select at least 1 available time slot !";
+      if (!allDay && selSlots && selSlots.length == 0) errs.timeslots = "Please select at least 1 available time slot !";
       setErrors(errs);
       return Object.keys(errs).length === 0;
     };
 
   const handleSave = useCallback(() => {
     if (!validate()) return;
-    let start: Date | undefined, end: Date;
+    let start: Date | undefined, end: Date, bookedDate:Date;
     const recurringDatesArray = [];
-    if (allDay || selSlots.length === 0) {
-      start = parseDateTime(dateStr, "00:00");
-      end = parseDateTime(dateStr, "23:59");
-    } else if (recurringEvent && recurringEndDate) {
+    if (recurringEvent && recurringEndDate) {
       let current = dayjs(dateStr);
       const end = dayjs(recurringEndDate);
 
@@ -131,11 +128,9 @@ useEffect(() => {
         current = current.add(1, "week");
       }
     }
-    const sorted = [...selSlots].sort((a, b) => a - b);
-    const sh = sorted[0];
-    const eh = sorted[sorted.length - 1] + 1;
-    start = parseDateTime(dateStr, `${String(sh).padStart(2, "0")}:00`);
-    end = parseDateTime(dateStr, `${String(eh).padStart(2, "0")}:00`);
+    start = new Date(`${dateStr}T00:00:00`);
+    end = new Date(`${dateStr}T00:00:00`);
+    bookedDate = new Date(`${dateStr}T00:00:00`);
 
     onSave({
       id: event?.id,
@@ -149,13 +144,10 @@ useEffect(() => {
       timeSlots: selSlots.length
         ? [...selSlots].sort((a, b) => a - b)
         : undefined,
-      date: parseDateTime(
-        dateStr,
-        `${String(selSlots[selSlots.length - 1] + 1).padStart(2, "0")}:00`,
-      ),
+      date: bookedDate,
       bookingPrice: selSlots.length * sportRate,
       recurringDates: recurringDatesArray,
-      recurringEndDate: parseDateTime(recurringEndDate, `${String(eh).padStart(2, "0")}:00`)
+      recurringEndDate: new Date(`${recurringEndDate}T00:00:00`)
     });
   }, [
     title,
