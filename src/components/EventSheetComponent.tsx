@@ -119,6 +119,9 @@ useEffect(() => {
     if (!validate()) return;
     let start: Date | undefined, end: Date, bookedDate:Date;
     const recurringDatesArray = [];
+    // if(allDay){
+
+    // }
     if (recurringEvent && recurringEndDate) {
       let current = dayjs(dateStr);
       const end = dayjs(recurringEndDate);
@@ -143,7 +146,7 @@ useEffect(() => {
       sport: selectedsport || undefined,
       timeSlots: selSlots.length
         ? [...selSlots].sort((a, b) => a - b)
-        : undefined,
+        : [],
       date: bookedDate,
       bookingPrice: selSlots.length * sportRate,
       recurringDates: recurringDatesArray,
