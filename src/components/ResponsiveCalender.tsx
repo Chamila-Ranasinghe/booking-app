@@ -229,9 +229,8 @@ const MobiScrollCalendar: FC = () => {
   };
 
   return (
-    <div className="app-shell">
-      {/* ══ TOPBAR ══ */}
-      <header className="topbar">
+  <>
+    <div className="topbar">
         {/* Left: logo */}
         <div className="topbar-logo">
           <LogoIcon />
@@ -315,7 +314,11 @@ const MobiScrollCalendar: FC = () => {
             <PlusIcon />
           </button> */}
         </div>
-      </header>
+      </div>
+      
+    <div className="app-shell">
+      {/* ══ TOPBAR ══ */}
+      
 
       {/* ══ MAIN BODY ══ */}
       <div className="main-content">
@@ -372,7 +375,7 @@ const MobiScrollCalendar: FC = () => {
           onConfirm={(ev)=> handleOnconfirm(ev)} 
         />
       )}
-    </div>
+    </div></>
   );
 };
 

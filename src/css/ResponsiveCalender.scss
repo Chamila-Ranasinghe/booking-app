@@ -21,25 +21,17 @@
   gap: 8px;
   padding: 0 16px;
   height: 58px;
-  // border-bottom: 0px solid var(--border);
-  // background-color: $AccentGreen;
-  position: relative;
+  position: sticky;
   z-index: 20;
   flex-shrink: 0;
   border-radius: var(--radius-pill);
   backdrop-filter: blur(35px);
-  // background: linear-gradient(
-  //   145deg,
-  //   rgba(255, 255, 255, 0.04),
-  //   rgba(255, 255, 255, 0.02)
-  // );
-  // border: 0.5px solid #161515;
   box-shadow:
     0 8px 10px rgba(90, 89, 89, 0.4),
     /* depth */ inset 0 1px 0 rgba(255, 255, 255, 0.1); /* inner shine */
   box-shadow:
     inset -4px -4px 8px #161515,
-    inset  4px  4px 8px #998c8c;  
+    inset  4px  4px 8px #998c8c;    
 }
 .topbar-logo {
   display: flex;
@@ -1167,6 +1159,9 @@
       min-width: 80px;
     }
   }
+  .topbar{
+    top:65px;
+  }
 }
 @media (min-width: 0px) and (max-width: 350px) {
   .topbar-nav {
@@ -1174,6 +1169,16 @@
   }
   .topbar-logo{
     display: none;
+  }
+
+  .topbar{
+    top:65px;
+  }
+}
+
+@media (min-width: 651px) and (max-width: 765px) {
+   .topbar{
+    top:80px;
   }
 }
 
@@ -1188,6 +1193,7 @@
     padding: 0 24px;
     // border-bottom: 0px solid var(--border);
     margin-bottom: 10px;
+    top:80px
   }
 
   .calendar-panel.mobile {
