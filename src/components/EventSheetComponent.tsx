@@ -119,9 +119,6 @@ useEffect(() => {
     if (!validate()) return;
     let start: Date | undefined, end: Date, bookedDate:Date;
     const recurringDatesArray = [];
-    // if(allDay){
-
-    // }
     if (recurringEvent && recurringEndDate) {
       let current = dayjs(dateStr);
       const end = dayjs(recurringEndDate);
