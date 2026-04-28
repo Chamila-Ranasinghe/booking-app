@@ -129,7 +129,7 @@ export default function NavBar(props: Props) {
               user && 
               <NavLink
                 key={item.label}
-                to={`/${item.path.toLowerCase()}`} // adjust route if needed
+                to={`/${item.path.toLowerCase()}`}
                 className="navlink"
               >
                 {({ isActive }) =>
