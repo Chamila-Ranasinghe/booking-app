@@ -71,6 +71,7 @@ export interface SportInterface {
   sportname: string;
   rate: number; 
   icon: string;
+  allDayRate : number; 
 }
 
 export interface Sport {

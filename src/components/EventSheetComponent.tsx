@@ -85,6 +85,7 @@ useEffect(() => {
   const [selectedsport, setSport] = useState<number>(event?.sport ?? 0);
   const [selSlots, setSelSlots] = useState<number[]>(initialSlots);
   const [sportRate, setSportRate] = useState<number>(sports?.data.find((v: SportInterface) => v.id == selectedsport)?.rate ?? 0);
+  const [sportRateforAllday, setSportRateallday] = useState<number>(sports?.data.find((v: SportInterface) => v.id == selectedsport)?.allDayRate ?? 0);
   const [recurringEndDate, setrecurringEndDate] = useState<string>(toDateInput(event?.recurringEndDate ?? recurringDefaultDate));
 
   const toggleSlot = useCallback((hour: number, isbooked: boolean = false) => {
@@ -97,11 +98,17 @@ useEffect(() => {
   const clearSlots = useCallback(() => setSelSlots([]), []);
  
   const handleDateChange = useCallback((bookingdate: string) =>{
+    let errs: EventSheetErrors = {};
+    errs.allDayEvent= "";
     setDateStr(bookingdate)
     let recurrdate = new Date(new Date(bookingdate).setDate(new Date(bookingdate).getDate() + 1)).toDateString();
     setrecurringEndDate(recurrdate);
-    console.log(recurrdate);
+    if(allDay || checkBookedSlotsExists()) setErrors(errs);
   },[]);
+
+  const checkBookedSlotsExists = ():boolean =>{
+    return !ALL_SLOTS?.some((s: any) => s.isbooked)
+  }
   
 
   const validate = (): boolean => {
@@ -110,16 +117,18 @@ useEffect(() => {
       if (selectedsport == 0) errs.sport = "Please Select a sport !";
       if (dateStr && new Date(dateStr).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)) errs.date = "Please choose a future Date !";
       // if (recurringEvent && new Date(recurringEndDate).setHours(0, 0, 0, 0) == new Date(dateStr).setHours(0, 0, 0, 0)) errs.recurringEndDate = "Recurring date should be a future date"
-      if (!allDay && selSlots && selSlots.length == 0) errs.timeslots = "Please select at least 1 available time slot !";
+      if(!allDay && selSlots && selSlots.length == 0) errs.timeslots = "Please select at least 1 available time slot !";
+      if(allDay && !isEdit && !checkBookedSlotsExists()) errs.allDayEvent = "Already there are bookings for the selected day !";
       setErrors(errs);
       return Object.keys(errs).length === 0;
     };
 
   const handleSave = useCallback(() => {
     if (!validate()) return;
-    let start: Date | undefined, end: Date, bookedDate:Date;
+    let start: Date | undefined, end: Date, bookedDate:Date, bookingprice:number;
     const recurringDatesArray = [];
-    if (recurringEvent && recurringEndDate) {
+
+    if(recurringEvent && recurringEndDate) {
       let current = dayjs(dateStr);
       const end = dayjs(recurringEndDate);
 
@@ -131,6 +140,7 @@ useEffect(() => {
     start = new Date(`${dateStr}T00:00:00`);
     end = new Date(`${dateStr}T00:00:00`);
     bookedDate = new Date(`${dateStr}T00:00:00`);
+    bookingprice = allDay ? sportRateforAllday : selSlots.length * sportRate;
 
     onSave({
       id: event?.id,
@@ -145,7 +155,7 @@ useEffect(() => {
         ? [...selSlots].sort((a, b) => a - b)
         : [],
       date: bookedDate,
-      bookingPrice: selSlots.length * sportRate,
+      bookingPrice: bookingprice,
       recurringDates: recurringDatesArray,
       recurringEndDate: new Date(`${recurringEndDate}T00:00:00`)
     });
@@ -217,6 +227,7 @@ useEffect(() => {
                       onClick={() => {
                         setSport(sport.id);
                         setSportRate(sport.rate);
+                        setSportRateallday(sport.allDayRate);
                       }}
                       className={`ss-card${selectedsport === sport.id ? " ss-active" : ""}`}
                       aria-pressed={selectedsport === sport.id}
@@ -249,7 +260,7 @@ useEffect(() => {
                 onChange={(newvalue) =>
                   // setDateStr(newvalue ? newvalue.format("YYYY-MM-DD") : "")
                   handleDateChange(
-                    newvalue ? newvalue.format("YYYY-MM-DD") : ""
+                    newvalue ? newvalue.format("YYYY-MM-DD") : "",
                   )
                 }
               />
@@ -270,7 +281,6 @@ useEffect(() => {
             />
             {recurringEvent && (
               <>
-               
                 <span className="toggle-label">End Date</span>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
@@ -285,24 +295,30 @@ useEffect(() => {
                     value={dayjs(recurringEndDate)}
                   />
                 </LocalizationProvider>
-                 {/* {errors.recurringEndDate && (
+                {/* {errors.recurringEndDate && (
               <span className="field-err">
                 <AlertIcon />
                 {errors.recurringEndDate}
               </span>
             )} */}
-            
               </>
             )}
           </div>
-          <div className="toggle-row">
-            <span className="toggle-label">All-day event</span>
-            <button
-              className={`toggle-btn ${allDay ? "on" : ""}`}
-              onClick={() => {
-                if(!isEdit) clearSlots();
-                setAllDay((v) => !v);}}
-            />
+          <div className="toggle-row tog-displyblock">
+              <span className="toggle-label">All-day event</span>
+              <button
+                className={`toggle-btn ${allDay ? "on" : ""}`}
+                onClick={() => {
+                  if (!isEdit) clearSlots();
+                  setAllDay((v) => !v);
+                }}
+              />
+              {errors.allDayEvent && (
+                <span className="field-err">
+                  <AlertIcon />
+                  {errors.allDayEvent}
+                </span>
+              )}
           </div>
 
           {/* ── Time Slot Picker ── */}
@@ -419,8 +435,16 @@ useEffect(() => {
         </div>
         <div className="total-price-display">
           <span className="total-tag">
-            {selSlots.length} slots / Total: Rs:
-            {selSlots.length * sportRate}
+            {!allDay
+  ? `${selSlots.length} slots / Total: ${(selSlots.length * sportRate).toLocaleString("en-LK", {
+      style: "currency",
+      currency: "LKR"
+    })}`
+  : `All Day / Total: ${(sportRateforAllday).toLocaleString("en-LK", {
+      style: "currency",
+      currency: "LKR"
+    })}`
+}
           </span>
         </div>
         {!isPastEvent && event?.status != BookingStatus.CONFIRMED && (

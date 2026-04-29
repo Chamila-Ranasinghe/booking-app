@@ -56,7 +56,8 @@ export const DetailSheet: FC<DetailSheetProps> = ({
           }}
         ></div>
         <div className="detail-title bgk-black-theme">{event.title}</div>
-        <div className="detail-time bgk-black-theme"> {timeRange[timeRange.length - 1]} <span style={{ color: event.color }}> / </span> {timeRange[0]}</div>
+        {event.allDay ? <div className="detail-time bgk-black-theme">All Day</div> : 
+          <div className="detail-time bgk-black-theme"> {timeRange[timeRange.length - 1]} <span style={{ color: event.color }}> / </span> {timeRange[0]}</div>}
         <div className="sheet-footer bgk-black-theme" style={{ border: "0px"}}>
           {(!isPastEvent && event.status != BookingStatus.CONFIRMED) &&<button
             className="btn btn-danger btn-black"

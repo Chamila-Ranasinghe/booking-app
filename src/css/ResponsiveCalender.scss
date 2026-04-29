@@ -794,6 +794,11 @@
   justify-content: space-between;
   gap: 12px;
 }
+
+.tog-displyblock{
+  display: block;
+}
+
 .toggle-label {
   font-size: 14px;
   font-weight: 500;
@@ -809,6 +814,7 @@
   position: relative;
   transition: background 0.22s;
   flex-shrink: 0;
+  float: right;
 }
 .toggle-btn.on {
   background: $AccentGreen;
