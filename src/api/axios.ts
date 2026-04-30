@@ -5,10 +5,10 @@ const api = axios.create({
 
 // Attach token automatically
 api.interceptors.request.use((config) => {
-  
+  config.withCredentials = true;
   const token = localStorage.getItem("token");
   if (token) {
-    config.withCredentials = true;
+    
     config.headers.Authorization = `Bearer ${token}`;
   }
   
