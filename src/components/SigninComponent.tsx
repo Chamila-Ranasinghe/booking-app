@@ -67,7 +67,7 @@ const SignIn: FC = () => {
           userdata.regDate = data.data.reg_date;
           userdata.userType = data.data.user_type;
           userdata.isAdmin = data.data.user_type === "user" ? false : true;
-          login({ user: userdata, token: data.data.sessiontoken});
+          login({ user: userdata });
           navigate("/calendar");
         } else {
           setSigninPageErrors(data.error);

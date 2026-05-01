@@ -48,7 +48,7 @@ const MobiScrollCalendar: FC = () => {
   const confirmEvent = useApiMutation(createRecords(confirmEvents),["confirm_booking"]);
   const deleteEvent = useApiMutation(createRecords(deleteEvents),["delete_booking"]);
   const {data: bookingData, refetch: refetchBookings } = 
-  useApiQuery(["allbookings"], getRecords(getBookings));
+  useApiQuery(["allbookings", user?.id?.toString() || ""], getRecords(getBookings));
   const [pressed, setPressed] = useState(false);
 
   useEffect(() => {
