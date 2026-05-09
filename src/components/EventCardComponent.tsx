@@ -14,7 +14,10 @@ export const EventCard: FC<EventCardProps> = ({ event, onPress }) => {
   );
 
   if (timeSlot?.data) {
-    event.timeSlots?.forEach((time) => {
+    const sortedSlots = [...(event.timeSlots || [])].sort(
+      (a, b) => Number(a) - Number(b),
+    );
+    sortedSlots?.forEach((time) => {
       let timestring =
         timeSlot.data?.find((u: any) => u.id == Number(time))?.timeSlotName ||
         "";
@@ -76,8 +79,8 @@ export const EventCard: FC<EventCardProps> = ({ event, onPress }) => {
                 {event.sportName} ({timeRange.length}hrs) -{" "}
               </div>
               <div className="event-time">
-                {timeRange[timeRange.length - 1]}{" "}
-                <span style={{ color: event.color }}> / </span> {timeRange[0]}
+                {timeRange[0].split("–")[0].trim()}{" "}
+                <span style={{ color: event.color }}>-</span> {timeRange[timeRange.length - 1].split("–")[1].trim()}
               </div>
             </>
           )}

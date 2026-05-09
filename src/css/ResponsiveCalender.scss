@@ -173,11 +173,11 @@
 .event-count-badge {
   height: 24px;
   padding: 0 10px;
-  background: var(--surface-3);
+  background: $CardDark;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-3);
+  color: $TextWhite;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -188,7 +188,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: $DarkGreen;
+  background: $AccentGreen;
   animation: pulse 1.5s ease infinite;
 }
 
@@ -1167,6 +1167,7 @@
   }
   .topbar{
     top:65px;
+    gap: 0px;
   }
 }
 @media (min-width: 0px) and (max-width: 350px) {
@@ -1628,4 +1629,50 @@
           .gp-btn   { width: 100%; max-width: 340px; }
           .gp-text  { font-size: 12px; }
         }
+
+         @media (max-width: 410px) {
+          .gp-inner { width: 100%; padding: 10px 15px; }
+          .gp-btn   { width: 100%; max-width: 150px; }
+          .gp-text  { font-size: 10px; }
+          .css-53g0n7-MuiButtonBase-root-MuiIconButton-root{
+            padding: 5px;
+          }
+          .topbar-right{
+            gap: 8px;
+          }
+        }
+
+        @media (max-width: 320px) {
+          .gp-text  { font-size: 8px; }
+          .css-53g0n7-MuiButtonBase-root-MuiIconButton-root{
+            padding: 1px;
+          }
+          .topbar{
+            gap: 1px;
+          }
+        }
+
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  color: white;
+}
+
+.tune-round-icon{
+  color: $TextWhite; 
+}
+
+.css-1rju2q6-MuiButtonBase-root-MuiMenuItem-root{
+  font-family: "Outfit" !important;
+}
+.css-1toxriw-MuiList-root-MuiMenu-list{
+  background-color: $CardDark;
+  color: $MutedGray;
+}
 

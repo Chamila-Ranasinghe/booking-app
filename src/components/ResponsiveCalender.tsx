@@ -23,9 +23,16 @@ import { createRecords, getRecords, useApiMutation, useApiQuery, type ResponseOb
 import { createBooking, editBookings, getBookings, confirmEvents, deleteEvents} from "../api/APIclass";
 import { useAuth } from "./AuthManager/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
+import toast, { Toaster } from "react-hot-toast";
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
+import {filteroptions} from "../classes/CalendarData";
 
 const NOW = new Date();
 const INITIAL_EVENTS: CalendarEvent[] = [];
+
 
 /* ══════════════════════════════════════════════════════════════
    12. ROOT APP COMPONENT
@@ -39,6 +46,9 @@ const MobiScrollCalendar: FC = () => {
   const [slideClass, setSlideClass] = useState<string>("");
   const [sheet, setSheet] = useState<SheetState | null>(null);
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth >= 768);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const open = Boolean(anchorEl);
 
   const agendaRef = useRef<HTMLDivElement | null>(null);
 
@@ -85,6 +95,8 @@ const MobiScrollCalendar: FC = () => {
       setTimeout(() => setSlideClass(""), 320);
       let newMonth = viewMonth + dir;
       let newYear = viewYear;
+      console.log("new month:" + newMonth);
+      console.log("new year:" + newYear);
       if (newMonth > 11) {
         newMonth = 0;
         newYear++;
@@ -144,11 +156,14 @@ const MobiScrollCalendar: FC = () => {
         saveEvent.mutate(requestObj, {
           onSuccess: (response: ResponseObj<any>) => {
             if (response.success) {
+              toast.success("Booking placed successfully!");
               refetchBookings();
               setSheet(null);
               queryClient.invalidateQueries({
                 queryKey: ["timeslots", requestObj.booking_date],
               });
+            }else{
+              toast.error(response.error);
             }
           },
         });
@@ -158,11 +173,14 @@ const MobiScrollCalendar: FC = () => {
           editEvent.mutate(requestObj, {
             onSuccess: (response: ResponseObj<any>) => {
               if (response.success) {
+                toast.success("Booking Updated Successfully!");
                 refetchBookings();
                 setSheet(null);
                 queryClient.invalidateQueries({
-                queryKey: ["timeslots", requestObj.booking_date],
-              });
+                  queryKey: ["timeslots", requestObj.booking_date],
+                });
+              } else {
+                toast.error(response.error);
               }
             },
           });
@@ -172,7 +190,7 @@ const MobiScrollCalendar: FC = () => {
     [],
   );
 
-  const handleDelete = useCallback((id: number) => {
+  const handleDelete = useCallback((id: number, selected_date: any) => {
     if (id) {
       let requestObj = {
         bookingId: id,
@@ -180,9 +198,15 @@ const MobiScrollCalendar: FC = () => {
       deleteEvent.mutate(requestObj, {
         onSuccess: (response: ResponseObj<any>) => {
           if (response.success) {
+            toast.success("Booking Deleted Successfully!");
             refetchBookings();
             setSheet(null);
-          }
+            queryClient.invalidateQueries({
+                queryKey: ["timeslots", new Date(selected_date).toLocaleDateString("en-CA")],
+              });
+          }else{
+              toast.error(response.error);
+            }
         },
       });
     }
@@ -196,9 +220,12 @@ const MobiScrollCalendar: FC = () => {
       confirmEvent.mutate(requestObj, {
         onSuccess: (response: ResponseObj<any>) => {
           if (response.success) {
+            toast.success("Booking Confirmed!");
             refetchBookings();
             setSheet(null);
-
+          }
+          else{
+            toast.error(response.error);
           }
         },
       });
@@ -228,8 +255,24 @@ const MobiScrollCalendar: FC = () => {
     isDesktop,
   };
 
+  const ITEM_HEIGHT = 48;
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = (selectedOption: string) => {
+    if (typeof selectedOption === "string") {
+      if (selectedOption.match(filteroptions[0].toString())) {
+        goToday();
+      } else {
+        setSelectedDay(null);
+      }
+    }
+    setAnchorEl(null);
+  };
+
   return (
   <>
+   <Toaster position="bottom-right" />
     <div className="topbar">
         {/* Left: logo */}
         <div className="topbar-logo">
@@ -276,6 +319,45 @@ const MobiScrollCalendar: FC = () => {
               Today
             </button>
           )}
+          
+           <div>
+      <IconButton
+        aria-label="more"
+        id="long-button"
+        aria-controls={open ? 'long-menu' : undefined}
+        aria-expanded={open ? 'true' : undefined}
+        aria-haspopup="true"
+        onClick={handleClick}
+      >
+      <TuneRoundedIcon className="tune-round-icon"/>
+      </IconButton>
+      <Menu
+        id="long-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        slotProps={{
+          paper: {
+            style: {
+              maxHeight: ITEM_HEIGHT * 4.5,
+              width: '20ch',
+              fontFamily: 'Outfit'
+            },
+          },
+          list: {
+            'aria-labelledby': 'long-button',
+          },
+        }}
+      >
+        {filteroptions.map((option) => (
+          <MenuItem key={option} selected={option === 'Pyxis'} onClick={()=>handleClose(option)}>
+            {option}
+          </MenuItem>
+        ))}
+      </Menu>
+    </div>
+
+
 
           {/* Add event — pill on desktop, circle on mobile */}
           {/* <button
@@ -353,6 +435,7 @@ const MobiScrollCalendar: FC = () => {
           onSave={handleSave}
           onDelete={handleDelete}
           onClose={() => setSheet(null)}
+          isLoading={saveEvent.isPending || editEvent.isPending || deleteEvent.isPending}
         />
       )}
       {sheet?.mode === "edit" && sheet.event && (
@@ -363,6 +446,7 @@ const MobiScrollCalendar: FC = () => {
           onSave={handleSave}
           onDelete={handleDelete}
           onClose={() => setSheet(null)}
+          isLoading={saveEvent.isPending || editEvent.isPending || deleteEvent.isPending}
         />
       )}
       {sheet?.mode === "detail" && sheet.event && (

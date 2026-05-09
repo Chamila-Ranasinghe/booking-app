@@ -45,11 +45,11 @@ export const AlertIcon: FC = () => (
 
 export const EmailCheckIcon: FC<{ open: boolean }> = ({ open }) =>
   open ? (
-     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#edf1ef" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+     <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#edf1ef" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20 6 9 17 4 12"/>
   </svg>
   ) : (
-     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#044920" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+     <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#044920" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20 6 9 17 4 12"/>
   </svg>
   );  

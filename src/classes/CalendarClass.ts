@@ -44,7 +44,7 @@ export interface DetailSheetProps {
   event: CalendarEvent;
   isDesktop: boolean;
   onEdit: (ev: CalendarEvent) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: number, date:any) => void;
   onClose: () => void;
   onConfirm: (ev: CalendarEvent) => void;
 }
@@ -70,8 +70,9 @@ export interface EventSheetProps {
   defaultDate: Date;
   isDesktop: boolean;
   onSave: (data: Omit<CalendarEvent, "id"> & { id?: number }) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: number, date: any) => void;
   onClose: () => void;
+  isLoading : boolean | false;
 }
 
 export interface User {

@@ -1,6 +1,6 @@
 import { useCallback, useState, useMemo, type FC, useEffect } from "react";
 import { BookingStatus, type EventSheetProps } from "../classes/CalendarClass";
-import { COLOR_PALETTE, type SportInterface} from "../classes/CalendarData";
+import { COLOR_PALETTE, type SportInterface } from "../classes/CalendarData";
 import { toDateInput } from "../classes/CalendarFunctions";
 import { XIcon } from "../icons/CalenderIcons";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -23,112 +23,140 @@ export const EventSheet: FC<EventSheetProps> = ({
   onSave,
   onDelete,
   onClose,
+  isLoading,
 }) => {
-
   const [dateStr, setDateStr] = useState<string>(
     toDateInput(event?.date ?? defaultDate),
   );
   const isEdit = Boolean(event);
   const { user } = useAuth();
-  const {data : sports, isLoading: isSportsLoading } = useApiQuery(["sports"],getRecords(getSports));
-  const {data : timeSlot, isLoading: isTimeSlotsLoading} = useApiQuery(["timeslots", dateStr],getRecords(getTimeSlots, {date: dateStr}));
+  const { data: sports, isLoading: isSportsLoading } = useApiQuery(
+    ["sports"],
+    getRecords(getSports),
+  );
+  const { data: timeSlot, isLoading: isTimeSlotsLoading } = useApiQuery(
+    ["timeslots", dateStr],
+    getRecords(getTimeSlots, { date: dateStr }),
+  );
   const ALL_SLOTS = timeSlot?.data;
-  let recurringDefaultDate = new Date;
+  let recurringDefaultDate = new Date();
 
-  
-const SLOT_PERIODS = [
-  {
-    label: "Morning",
-    slots: ALL_SLOTS?.filter((s: any) => s.timePeriod == 1),
-  },
-  {
-    label: "Afternoon",
-    slots: ALL_SLOTS?.filter((s: any) => s.timePeriod == 2),
-  },
-  {
-    label: "Evening",
-    slots: ALL_SLOTS?.filter((s: any) => s.timePeriod == 3),
-  },
-];
+  const SLOT_PERIODS = [
+    {
+      label: "Morning",
+      slots: ALL_SLOTS?.filter((s: any) => s.timePeriod == 1),
+    },
+    {
+      label: "Afternoon",
+      slots: ALL_SLOTS?.filter((s: any) => s.timePeriod == 2),
+    },
+    {
+      label: "Evening",
+      slots: ALL_SLOTS?.filter((s: any) => s.timePeriod == 3),
+    },
+  ];
 
-function formatSlotLabel(id: number): string {
-  return ALL_SLOTS?.find((u: any) => u.id == id)?.timeSlotName || "";
-}
-
-const initialSlots = useMemo<number[]>(() => {
-  if (!event || event.allDay) return [];
-  const slots: number[] = [];
-  event.timeSlots?.map((time: number) => {
-    slots.push(Number(time));
-  });
-  return slots;
-}, [event]);
-
-const isPastEvent: boolean = event?.date && new Date(event.date).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0) || false;
-
-useEffect(() => {
- 
-  if (!user) return;
-  if (!user.isAdmin) {
-    setTitle(`${user.firstname} ${user.lastname} - ${user.phone}`);
+  function formatSlotLabel(id: number): string {
+    return ALL_SLOTS?.find((u: any) => u.id == id)?.timeSlotName || "";
   }
 
-  recurringDefaultDate = new Date(new Date(dateStr).setDate(new Date(dateStr).getDate() + 1));
-  
-}, [user]);
+  const initialSlots = useMemo<number[]>(() => {
+    if (!event || event.allDay) return [];
+    const slots: number[] = [];
+    event.timeSlots?.map((time: number) => {
+      slots.push(Number(time));
+    });
+    return slots;
+  }, [event]);
 
-  const [errors,   setErrors]   = useState<EventSheetErrors>({});
+  const isPastEvent: boolean =
+    (event?.date &&
+      new Date(event.date).setHours(0, 0, 0, 0) <
+        new Date().setHours(0, 0, 0, 0)) ||
+    false;
+
+  useEffect(() => {
+    if (!user) return;
+    if (!user.isAdmin) {
+      setTitle(`${user.firstname} ${user.lastname} - ${user.phone}`);
+    }
+
+    recurringDefaultDate = new Date(
+      new Date(dateStr).setDate(new Date(dateStr).getDate() + 1),
+    );
+  }, [user]);
+
+  const [errors, setErrors] = useState<EventSheetErrors>({});
   const [title, setTitle] = useState<string>(event?.title ?? "");
   const [color, setColor] = useState<string>(event?.color ?? COLOR_PALETTE[0]);
   const [allDay, setAllDay] = useState<boolean>(event?.allDay ?? false);
-  const [recurringEvent, setRecurring] = useState<boolean>(event?.recurringEvent ?? false,);
+  const [recurringEvent, setRecurring] = useState<boolean>(
+    event?.recurringEvent ?? false,
+  );
   const [selectedsport, setSport] = useState<number>(event?.sport ?? 0);
   const [selSlots, setSelSlots] = useState<number[]>(initialSlots);
-  const [sportRate, setSportRate] = useState<number>(sports?.data.find((v: SportInterface) => v.id == selectedsport)?.rate ?? 0);
-  const [sportRateforAllday, setSportRateallday] = useState<number>(sports?.data.find((v: SportInterface) => v.id == selectedsport)?.allDayRate ?? 0);
-  const [recurringEndDate, setrecurringEndDate] = useState<string>(toDateInput(event?.recurringEndDate ?? recurringDefaultDate));
+  const [sportRate, setSportRate] = useState<number>(
+    sports?.data.find((v: SportInterface) => v.id == selectedsport)?.rate ?? 0,
+  );
+  const [sportRateforAllday, setSportRateallday] = useState<number>(
+    sports?.data.find((v: SportInterface) => v.id == selectedsport)
+      ?.allDayRate ?? 0,
+  );
+  const [recurringEndDate, setrecurringEndDate] = useState<string>(
+    toDateInput(event?.recurringEndDate ?? recurringDefaultDate),
+  );
 
   const toggleSlot = useCallback((hour: number, isbooked: boolean = false) => {
-    if(isbooked) return;
+    if (isbooked) return;
     setSelSlots((prev) =>
       prev.includes(hour) ? prev.filter((h) => h !== hour) : [...prev, hour],
     );
   }, []);
 
   const clearSlots = useCallback(() => setSelSlots([]), []);
- 
-  const handleDateChange = useCallback((bookingdate: string) =>{
-    let errs: EventSheetErrors = {};
-    errs.allDayEvent= "";
-    setDateStr(bookingdate)
-    let recurrdate = new Date(new Date(bookingdate).setDate(new Date(bookingdate).getDate() + 1)).toDateString();
-    setrecurringEndDate(recurrdate);
-    if(allDay || checkBookedSlotsExists()) setErrors(errs);
-  },[]);
 
-  const checkBookedSlotsExists = ():boolean =>{
-    return !ALL_SLOTS?.some((s: any) => s.isbooked)
-  }
-  
+  const handleDateChange = useCallback((bookingdate: string) => {
+    let errs: EventSheetErrors = {};
+    errs.allDayEvent = "";
+    setDateStr(bookingdate);
+    let recurrdate = new Date(
+      new Date(bookingdate).setDate(new Date(bookingdate).getDate() + 1),
+    ).toDateString();
+    setrecurringEndDate(recurrdate);
+    if (allDay || checkBookedSlotsExists()) setErrors(errs);
+  }, []);
+
+  const checkBookedSlotsExists = (): boolean => {
+    return !ALL_SLOTS?.some((s: any) => s.isbooked);
+  };
 
   const validate = (): boolean => {
-      const errs: EventSheetErrors = {};
-      if(!title.trim()) errs.title = "Please enter a booking name";
-      if (selectedsport == 0) errs.sport = "Please Select a sport !";
-      if (dateStr && new Date(dateStr).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)) errs.date = "Please choose a future Date !";
-      // if (recurringEvent && new Date(recurringEndDate).setHours(0, 0, 0, 0) == new Date(dateStr).setHours(0, 0, 0, 0)) errs.recurringEndDate = "Recurring date should be a future date"
-      if(!allDay && selSlots && selSlots.length == 0) errs.timeslots = "Please select at least 1 available time slot !";
-      if(allDay && !isEdit && !checkBookedSlotsExists()) errs.allDayEvent = "Already there are bookings for the selected day !";
-      setErrors(errs);
-      return Object.keys(errs).length === 0;
-    };
+    const errs: EventSheetErrors = {};
+    if (!title.trim()) errs.title = "Please enter a booking name";
+    if (selectedsport == 0) errs.sport = "Please Select a sport !";
+    if (
+      dateStr &&
+      new Date(dateStr).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)
+    )
+      errs.date = "Please choose a future Date !";
+    // if (recurringEvent && new Date(recurringEndDate).setHours(0, 0, 0, 0) == new Date(dateStr).setHours(0, 0, 0, 0)) errs.recurringEndDate = "Recurring date should be a future date"
+    if (!allDay && selSlots && selSlots.length == 0)
+      errs.timeslots = "Please select at least 1 available time slot !";
+    if (allDay && !isEdit && !checkBookedSlotsExists())
+      errs.allDayEvent = "Already there are bookings for the selected day !";
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
 
   const handleSave = useCallback(() => {
     if (!validate()) return;
-    let start: Date | undefined, end: Date, bookedDate:Date, bookingprice:number;
+    let start: Date | undefined,
+      end: Date,
+      bookedDate: Date,
+      bookingprice: number;
     const recurringDatesArray = [];
 
-    if(recurringEvent && recurringEndDate) {
+    if (recurringEvent && recurringEndDate) {
       let current = dayjs(dateStr);
       const end = dayjs(recurringEndDate);
 
@@ -151,13 +179,11 @@ useEffect(() => {
       allDay: allDay || selSlots.length === 0,
       recurringEvent,
       sport: selectedsport || undefined,
-      timeSlots: selSlots.length
-        ? [...selSlots].sort((a, b) => a - b)
-        : [],
+      timeSlots: selSlots.length ? [...selSlots].sort((a, b) => a - b) : [],
       date: bookedDate,
       bookingPrice: bookingprice,
       recurringDates: recurringDatesArray,
-      recurringEndDate: new Date(`${recurringEndDate}T00:00:00`)
+      recurringEndDate: new Date(`${recurringEndDate}T00:00:00`),
     });
   }, [
     title,
@@ -178,11 +204,14 @@ useEffect(() => {
   );
 
   return (
+    
     <div
       className={`overlay ${isDesktop ? "modal-mode" : ""}`}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
+     
       <div className={isDesktop ? "modal" : "sheet"}>
+        {isLoading && <div className="modal-overlay"><span className="spinner spinner-main-page"></span></div>}
         {!isDesktop && <div className="sheet-handle" />}
 
         <div className="sheet-header">
@@ -192,6 +221,21 @@ useEffect(() => {
           <button className="close-btn" onClick={onClose}>
             <XIcon />
           </button>
+        </div>
+         <div className="total-price-display">
+          <span className="total-tag">
+            {!allDay
+              ? `${selSlots.length} slots / Total: ${(
+                  selSlots.length * sportRate
+                ).toLocaleString("en-LK", {
+                  style: "currency",
+                  currency: "LKR",
+                })}`
+              : `All Day / Total: ${sportRateforAllday.toLocaleString("en-LK", {
+                  style: "currency",
+                  currency: "LKR",
+                })}`}
+          </span>
         </div>
 
         <div className="sheet-body">
@@ -304,21 +348,23 @@ useEffect(() => {
               </>
             )}
           </div>
+
+
           <div className="toggle-row tog-displyblock">
-              <span className="toggle-label">All-day event</span>
-              <button
-                className={`toggle-btn ${allDay ? "on" : ""}`}
-                onClick={() => {
-                  if (!isEdit) clearSlots();
-                  setAllDay((v) => !v);
-                }}
-              />
-              {errors.allDayEvent && (
-                <span className="field-err">
-                  <AlertIcon />
-                  {errors.allDayEvent}
-                </span>
-              )}
+            <span className="toggle-label">All-day event</span>
+            <button
+              className={`toggle-btn ${allDay ? "on" : ""}`}
+              onClick={() => {
+                if (!isEdit) clearSlots();
+                setAllDay((v) => !v);
+              }}
+            />
+            {errors.allDayEvent && (
+              <span className="field-err">
+                <AlertIcon />
+                {errors.allDayEvent}
+              </span>
+            )}
           </div>
 
           {/* ── Time Slot Picker ── */}
@@ -433,32 +479,42 @@ useEffect(() => {
             </div>
           </div>
         </div>
-        <div className="total-price-display">
+        {/* <div className="total-price-display">
           <span className="total-tag">
             {!allDay
-  ? `${selSlots.length} slots / Total: ${(selSlots.length * sportRate).toLocaleString("en-LK", {
-      style: "currency",
-      currency: "LKR"
-    })}`
-  : `All Day / Total: ${(sportRateforAllday).toLocaleString("en-LK", {
-      style: "currency",
-      currency: "LKR"
-    })}`
-}
+              ? `${selSlots.length} slots / Total: ${(
+                  selSlots.length * sportRate
+                ).toLocaleString("en-LK", {
+                  style: "currency",
+                  currency: "LKR",
+                })}`
+              : `All Day / Total: ${sportRateforAllday.toLocaleString("en-LK", {
+                  style: "currency",
+                  currency: "LKR",
+                })}`}
           </span>
-        </div>
+        </div> */}
         {!isPastEvent && event?.status != BookingStatus.CONFIRMED && (
           <div className="sheet-footer">
             {isEdit && event && (
               <button
                 className="btn btn-danger"
-                onClick={() => onDelete(event.id)}
+                onClick={() => onDelete(event.id, event.date)}
+                disabled={isLoading}
               >
                 Delete
               </button>
             )}
-            <button className="btn btn-primary" onClick={handleSave}>
-              {isEdit ? "Save Changes" : "Book"}
+            <button
+              className="btn btn-primary"
+              onClick={handleSave}
+              disabled={isLoading}
+            >
+            {isEdit ? (
+                "Save Changes"
+              ) : (
+                "Book"
+              )}
             </button>
           </div>
         )}

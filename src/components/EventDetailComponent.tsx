@@ -22,14 +22,18 @@ export const DetailSheet: FC<DetailSheetProps> = ({
   const isPastEvent: boolean = event?.date && new Date(event.date).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0) || false;
   const timeRange: string[] = [];
   if (timeSlot?.data) {
-    event.timeSlots?.forEach((time) => {
+    const sortedSlots = [...(event.timeSlots || [])].sort(
+      (a, b) => Number(a) - Number(b),
+    );
+    sortedSlots?.forEach((time) => {
       let timestring =
         timeSlot.data?.find((u: any) => u.id == Number(time))?.timeSlotName ||
         "";
       if (timestring) {
         timeRange.push(timestring);
       }
-    });
+    }
+  );
   }
 
   // const timeStr = event.allDay
@@ -57,12 +61,12 @@ export const DetailSheet: FC<DetailSheetProps> = ({
         ></div>
         <div className="detail-title bgk-black-theme">{event.title}</div>
         {event.allDay ? <div className="detail-time bgk-black-theme">All Day</div> : 
-          <div className="detail-time bgk-black-theme"> {timeRange[timeRange.length - 1]} <span style={{ color: event.color }}> / </span> {timeRange[0]}</div>}
+          <div className="detail-time bgk-black-theme"> {timeRange[0].split("–")[0].trim()} <span style={{ color: event.color }}>-</span> {timeRange[timeRange.length - 1].split("–")[1].trim()}</div>}
         <div className="sheet-footer bgk-black-theme" style={{ border: "0px"}}>
           {(!isPastEvent && event.status != BookingStatus.CONFIRMED) &&<button
             className="btn btn-danger btn-black"
             onClick={() => {
-              onDelete(event.id);
+              onDelete(event.id, event.date);
               onClose();
             }}
           >

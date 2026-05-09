@@ -87,6 +87,7 @@ const Register: FC = () => {
           if(data.success){
               setLoading(false);
               setSuccess(true);
+              navigate("/signin");
           }
           else{
             setRegisterPageErrors(data.error)
@@ -329,7 +330,18 @@ const Register: FC = () => {
             <div className="form-col">
               {/* Email */}
               <div className="field-wrap">
-                <label className="field-label" htmlFor="email">Email address</label>
+                <label className="field-label" htmlFor="email">Email address <span
+                  style={{
+                    fontWeight: 500,
+                    textTransform: "none",
+                    letterSpacing: 0,
+                    marginLeft: 6,
+                    color: "var(--text-4)",
+                    fontSize: 11,
+                  }}
+                >
+                  — Enter your email and click 'Verify' to proceed.
+                </span></label>
                 <div className="field-input-wrap">
                   
                   <input id="email" name="email" type="email" autoComplete="email" disabled={isemailverifid}
@@ -338,7 +350,7 @@ const Register: FC = () => {
                   />
                  <div className="field-icon"><EmailIcon/></div>
                  <button type="button" className="eye-btn verify-email" disabled={isemailverifid} onClick={hadleCheckEmail}>
-                    <EmailCheckIcon open={isemailverifid}/>
+                    <span className="verify-text-class">{!isemailverifid? "Verify" : "Verified"}</span><EmailCheckIcon open={isemailverifid}/>
                   </button>
                 </div>
                 {errors.email && <span className="field-err"><AlertIcon/>{errors.email}</span>}

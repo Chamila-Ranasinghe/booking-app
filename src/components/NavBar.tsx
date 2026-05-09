@@ -28,7 +28,9 @@ interface Props {
 }
 
 const drawerWidth = 240;
-const navItems = [{ label: "My Calendar", path: "calendar" }];
+const navItems = [{ label: "My Calendar", path: "calendar" }, 
+  // { label: "My Bookings", path: "mybookings" }
+];
 const signInItems = [
   { label: "Register", path: "register" },
   { label: "Sign In", path: "signin" },

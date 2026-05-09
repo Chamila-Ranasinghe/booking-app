@@ -7,7 +7,7 @@ import {
   getMonthEventDays,
   getEventsForDay,
 } from "../classes/CalendarFunctions";
-import { XIcon, CalEmptyIcon } from "../icons/CalenderIcons";
+import { CalEmptyIcon } from "../icons/CalenderIcons";
 import { MONTH_NAMES, DAY_LONG } from "../classes/CalendarData";
 import "../css/AgendaPanelComponent.scss";
 
@@ -17,7 +17,6 @@ export const AgendaPanel: FC<AgendaProps> = ({
   month,
   selectedDay,
   onEventPress,
-  onClearDay,
   agendaRef,
   isDesktop,
 }) => {
@@ -81,11 +80,11 @@ export const AgendaPanel: FC<AgendaProps> = ({
           <div className="day-event-container">
             <div className="agenda-sidebar-heading">{sidebarHeading}</div>
             <div className="agenda-sidebar-sub">{sidebarSub}</div>
-             {selectedDay && (
+             {/* {selectedDay && (
             <button className="agenda-sidebar-clear" onClick={onClearDay}>
               <XIcon /> Show all month
             </button>
-          )}
+          )} */}
           </div>
          
         </div>

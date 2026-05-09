@@ -766,16 +766,27 @@ body,
   right: 0px;
   left: auto;
   background: $AccentGreen;
-  padding: 10px;
+  padding: 12px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
   cursor: pointer;
+  gap: 5px;
 
   &:hover {
     background-color: $HoverGreen;
   }
+
+  .verify-text-class{
+    font-size: 14px;
+    font-family: "Outfit";
+    color: #044920;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
 }
 
 .email-verify-container {

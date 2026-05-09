@@ -6,6 +6,7 @@ import SignIn from "./components/SigninComponent";
 import Register from "./components/RegisterComponent";
 import Home from "./components/HomeComponent";
 import ProtectedRoute from "./components/AuthManager/ProtectedRoute";
+import MyBooking from "./components/MyBookingComponent";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/calendar" element={ <ProtectedRoute><MobiScrollCalendar /></ProtectedRoute>}></Route>
           <Route path="/signin" element={<SignIn />}></Route>
           <Route path="/register" element={<Register />}></Route>
+          <Route path="/mybookings" element={<MyBooking />}></Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
